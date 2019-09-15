@@ -19,7 +19,6 @@ int main (int argc, char** argv)
 	string infile, outfile, pch, strtemp;
 	ifstream fp;
 	int count;
-	// hsi interm;
 	
 
 	//attempts to open parameters file.
@@ -65,10 +64,6 @@ int main (int argc, char** argv)
 		//copies source to target and sets filename.
 		tgt = src;
 		tgt = outfile;
-
-		//copies and converts source to HSI and sets filename.
-		// interm = src;
-		// interm = outfile;
 		
 		if(fp.eof()) break;
 		rois_vec.clear();
