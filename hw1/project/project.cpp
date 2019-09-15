@@ -94,7 +94,6 @@ int main (int argc, char** argv)
 				rois_vec.push_back(roi_vec);
 			}
 
-			//clock_t startTime = clock();
 			//grayscale binarization/threshold process.
 			if(!strncasecmp(pch.c_str(),"bin",MAXLEN)) {
 				
