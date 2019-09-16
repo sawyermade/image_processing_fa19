@@ -129,6 +129,7 @@ void utilities::roiSmooth2DAdaptive(image& src, image& tgt, int ws, pair<int, in
 
 	// Goes through all pixels in ROI
 	for(int j = start.second; j < end.second; ++j) {
+
 		for(int i = start.first; i < end.first; ++i) {
 			//sets m value
 			for(m = m_max; m > 0; m--){
@@ -148,7 +149,7 @@ void utilities::roiSmooth2DAdaptive(image& src, image& tgt, int ws, pair<int, in
 			if(m < 1)
 				continue;
 
-			//calculates the windows pixel average for rgb.
+			//calculates the windows' pixel sum for rgb/3 channel gray scale.
 			sumr = 0, sumg = 0, sumb = 0;
 			ws = 2*m + 1;
 			for(int y = j-m; y < j+m+1; ++y){
