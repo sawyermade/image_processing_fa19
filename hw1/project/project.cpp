@@ -82,12 +82,10 @@ int main (int argc, char** argv)
 
 			// Checks for roi overlap
 			bool ovlap = false;
-			if(utilities::roi_overlap(rois_vec, roi_vec)){
+			if(utilities::roi_overlap(rois_vec, roi_vec))
 				ovlap = true;
-			}
-			else {
+			else 
 				rois_vec.push_back(roi_vec);
-			}
 
 			//grayscale binarization/threshold process.
 			if(!strncasecmp(pch.c_str(),"bin",MAXLEN)) {
@@ -98,7 +96,6 @@ int main (int argc, char** argv)
 				// If roi overlap is false
 				if(!ovlap)
 					utilities::roiBinarizeRange(src, tgt, start, size, thresh1, thresh2);
-				
 			}
 
 			//color binarization/threshold process.
@@ -116,6 +113,23 @@ int main (int argc, char** argv)
 					utilities::roiBinarizeColor(src, tgt, tc, colors, start, size);
 			}
 
+			//1D smoothing process.
+			else if(!strncasecmp(pch.c_str(),"1Dsmooth",MAXLEN)) {
+				int ws;
+
+				//collects data from parameters file.
+				fp >> ws;
+
+				//makes sure ws > 3 and odd.
+				if(ws % 2 == 0 || ws < 3) {
+					cout << "\nWindow size must be an odd number 3 or greater for smothing. 2DSmooth will not be processed on " << infile << endl;
+					continue;
+				}
+				
+				if(!ovlap)
+					utilities::roiSmooth2DAdaptive(src, tgt, ws, start, size);
+			}
+
 			//2D smoothing process.
 			else if(!strncasecmp(pch.c_str(),"2Dsmooth",MAXLEN)) {
 				int ws;
@@ -125,7 +139,6 @@ int main (int argc, char** argv)
 
 				//makes sure ws > 3 and odd.
 				if(ws % 2 == 0 || ws < 3) {
-
 					cout << "\nWindow size must be an odd number 3 or greater for smothing. 2DSmooth will not be processed on " << infile << endl;
 					continue;
 				}

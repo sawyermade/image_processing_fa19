@@ -20,6 +20,7 @@ class utilities
 		static void roiBinarizeRange(image &src, image &tgt, pair<int, int>startPoints, pair<int, int> sizexy, int thresh1, int thresh2);
 		static void roiBinarizeColor(image &src, image &tgt, int threshold, int colors[], pair<int, int> startPoints, pair<int, int> sizexy);
 		static void roiSmooth2DAdaptive(image& src, image& tgt, int ws, pair<int, int> startPoints, pair<int, int> size);
+		static void roiSmooth1DAdaptive(image& src, image& tgt, int ws, pair<int, int> start, pair<int, int> size);
 };
 
 #endif

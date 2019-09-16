@@ -166,3 +166,142 @@ void utilities::roiSmooth2DAdaptive(image& src, image& tgt, int ws, pair<int, in
 		}
 	}
 }
+
+//1D Adaptive Window Smooth. Runs at O(2n^2 + 2m) where m << n, so runs at O(n^2).
+void utilities::roiSmooth1DAdaptive(image& src, image& tgt, int ws, pair<int, int> start, pair<int, int> size) {
+	// Vars
+	int sumr, sumg, sumb, k, m_max = (ws-1)/2, m;
+	image intermediate;
+	pair<int, int> end;
+
+	//copies image and calculates endpoints.
+	intermediate = src;
+	end.first = start.first + size.first;
+	end.second = start.second + size.second;
+
+	//Horizontal 1D
+	for(int j = start.second; j < end.second; ++j) {
+		// Sums for averages
+		sumr = 0, sumg = 0, sumb = 0;
+		k = start.second;
+
+		for(int i = start.first; i < end.first; ++i) {
+			//sets m value
+			for(m = m_max; m > 0; m--){
+				// Checks top left areas
+				if(i - start.first < m || j - start.second < m)
+					continue;
+
+				// Checks bottom right areas
+				if(end.first - i < m || end.second - j < m)
+					continue;
+
+				// Found m that works, breaks loop
+				break;
+			}
+
+			// Checks if m smaller than 1 which means cant run on this pixel
+			if(m < 1)
+				continue;
+			ws = 2*m + 1;
+
+			if(j <= start.second + m) {
+		
+				for(; k <= j+m; ++k) {
+					sumr += src.getPixel(i,k);
+					sumg += src.getPixel(i,k,GREEN);
+					sumb += src.getPixel(i,k,BLUE);
+				}
+
+				intermediate.setPixel(i,j,checkValue(sumr/(k - start.second)));
+				intermediate.setPixel(i,j,GREEN,checkValue(sumg/(k - start.second)));
+				intermediate.setPixel(i,j,BLUE,checkValue(sumb/(k - start.second)));
+			}
+
+			else if(j >= end.second - m) {
+
+				sumr -= src.getPixel(i,j-1-m);
+				sumg -= src.getPixel(i,j-1-m,GREEN);
+				sumb -= src.getPixel(i,j-1-m,BLUE);
+
+				intermediate.setPixel(i,j,checkValue(sumr/(end.second - j + m)));
+				intermediate.setPixel(i,j,GREEN,checkValue(sumg/(end.second - j + m)));
+				intermediate.setPixel(i,j,BLUE,checkValue(sumb/(end.second - j + m)));
+			}
+
+			else {
+
+				sumr = sumr - src.getPixel(i,j-1-m) + src.getPixel(i,j+m);
+				sumg = sumg - src.getPixel(i,j-1-m,GREEN) + src.getPixel(i,j+m,GREEN);
+				sumb = sumb - src.getPixel(i,j-1-m,BLUE) + src.getPixel(i,j+m,BLUE);
+
+				intermediate.setPixel(i,j,checkValue(sumr/ws));
+				intermediate.setPixel(i,j,GREEN,checkValue(sumg/ws));
+				intermediate.setPixel(i,j,BLUE,checkValue(sumb/ws));
+			}
+
+		}
+	}
+
+	//Vertical 1D
+	for(int j = start.second; j < end.second; ++j) {
+		// Sums for averages
+		sumr = 0, sumg = 0, sumb = 0;
+		k = start.first;
+		
+		for(int i = start.first; i < end.first; ++i) {
+			//sets m value
+			for(m = m_max; m > 0; m--){
+				// Checks top left areas
+				if(i - start.first < m || j - start.second < m)
+					continue;
+
+				// Checks bottom right areas
+				if(end.first - i < m || end.second - j < m)
+					continue;
+
+				// Found m that works, breaks loop
+				break;
+			}
+
+			// Checks if m smaller than 1 which means cant run on this pixel
+			if(m < 1)
+				continue;
+			ws = 2*m + 1;
+			
+			if(i <= start.first + m) {
+
+				for(; k <= i+m; ++k) {
+					sumr += intermediate.getPixel(k,j);
+					sumg += intermediate.getPixel(k,j,GREEN);
+					sumb += intermediate.getPixel(k,j,BLUE);
+				}
+				tgt.setPixel(i,j,checkValue(sumr/(k - start.first)));
+				tgt.setPixel(i,j,GREEN,checkValue(sumg/(k - start.first)));
+				tgt.setPixel(i,j,BLUE,checkValue(sumb/(k - start.first)));
+			}
+
+			else if(i >= end.first - m) {
+
+				sumr -= intermediate.getPixel(i-1-m,j);
+				sumg -= intermediate.getPixel(i-1-m,j,GREEN);
+				sumb -= intermediate.getPixel(i-1-m,j,BLUE);
+
+				tgt.setPixel(i,j,checkValue(sumr/(end.first - i + m)));
+				tgt.setPixel(i,j,GREEN,checkValue(sumg/(end.first - i + m)));
+				tgt.setPixel(i,j,BLUE,checkValue(sumb/(end.first - i + m)));
+			}
+
+			else {
+
+				sumr = sumr - intermediate.getPixel(i-1-m, j) + intermediate.getPixel(i+m,j);
+				sumg = sumg - intermediate.getPixel(i-1-m, j,GREEN) + intermediate.getPixel(i+m,j,GREEN);
+				sumb = sumb - intermediate.getPixel(i-1-m, j,BLUE) + intermediate.getPixel(i+m,j,BLUE);
+
+				tgt.setPixel(i,j,checkValue(sumr/ws));
+				tgt.setPixel(i,j,GREEN,checkValue(sumg/ws));
+				tgt.setPixel(i,j,BLUE,checkValue(sumb/ws));
+			}
+		}
+	}
+}

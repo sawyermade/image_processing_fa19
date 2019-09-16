@@ -18,4 +18,4 @@ $(EXEC): $(OBJ)
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $^
 
 clean:
-	rm -f $(OBJ) $(EXEC) output-images/*.pgm output-images/*.ppm
+	rm -f $(OBJ) $(EXEC) output-images/*.pgm output-images/*.ppm output-images/*.jpg
