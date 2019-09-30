@@ -53,9 +53,6 @@ int utilities::optimalThreshGS(image& src, image& tgt, pair<int, int> start, pai
 	else
 		median_val = median_vec[len_vec / 2];
 
-	//DEBUG
-	// cout << "Initial Median Value = " << median_val << endl;
-
 	// Iterates until difference below limit
 	thresh_curr = median_val;
 	do {
