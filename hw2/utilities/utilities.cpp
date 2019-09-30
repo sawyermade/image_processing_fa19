@@ -27,14 +27,12 @@ int utilities::checkValue(int value)
 //MY STUFF
 /*-----------------------------------------------------------------------*/
 
-int utilities::optimalThreshGS(image& src, image& tgt, pair<int, int> start, pair<int, int> size){
+int utilities::optimalThreshGS(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int limit){
 	// Local vars
 	vector<uint8_t> median_vec;
-	int median_val, thresh_prev, thresh_curr;
-	int len_vec, limit = 5;
+	int median_val, thresh_prev, thresh_curr, len_vec;
 	int x1 = start.first, y1 = start.second, x2 = x1 + size.first, y2 = y1 + size.second;
-	int pixel_val, back_mean, forg_mean;
-	int back_count, forg_count, diff;
+	int pixel_val, back_mean, back_count, forg_mean, forg_count, diff;
 
 	// Copies pixels to median vector
 	for(int j = y1; j < y2; j++)
@@ -45,9 +43,7 @@ int utilities::optimalThreshGS(image& src, image& tgt, pair<int, int> start, pai
 	std::sort(median_vec.begin(), median_vec.end());
 	len_vec = median_vec.size();
 	if(len_vec % 2 == 0){
-		int m1, m2;
-		m2 = len_vec / 2;
-		m1 = m2 - 1;
+		int m2 = len_vec / 2, m1 = m2 - 1;
 		median_val = (median_vec[m1] + median_vec[m2]) / 2;
 	}
 	else

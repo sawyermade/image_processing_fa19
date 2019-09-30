@@ -9,7 +9,7 @@ EXEC=hw
 LDFLAGS=
 
 
-all: $(EXEC)
+all: clean $(EXEC)
 
 $(EXEC): $(OBJ)
 	$(CC) $(CLFAGS) $(INC) -o $@ $^ $(LIB)
