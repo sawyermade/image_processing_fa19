@@ -19,7 +19,7 @@ int main (int argc, char** argv)
 	string infile, outfile, pch, strtemp;
 	ifstream fp;
 	int count;
-	
+	bool ovlap;
 
 	//attempts to open parameters file.
 	fp.open(argv[1],fstream::in);
@@ -70,7 +70,7 @@ int main (int argc, char** argv)
 		for(int i = 0; i < count; ++i) {
 			
 			//reads process name and ROI.
-			pch = " ";
+			pch.clear();
 			fp >> pch;
 			fp >> start.first >> start.second;
 			fp >> size.first >> size.second;
@@ -81,10 +81,8 @@ int main (int argc, char** argv)
 			roi_vec.push_back(size.second);
 
 			// Checks for roi overlap
-			bool ovlap = false;
-			if(utilities::roi_overlap(rois_vec, roi_vec))
-				ovlap = true;
-			else 
+			ovlap = utilities::roi_overlap(rois_vec, roi_vec);
+			if(!ovlap)
 				rois_vec.push_back(roi_vec);
 
 			//grayscale binarization/threshold process.
@@ -145,6 +143,17 @@ int main (int argc, char** argv)
 				
 				if(!ovlap)
 					utilities::roiSmooth2DAdaptive(src, tgt, ws, start, size);
+			}
+
+			// Optimal Thresholding
+			else if(!strncasecmp(pch.c_str(),"oth",MAXLEN)) {
+				// Stuff
+				int thresh_opt;
+
+				if(!ovlap){
+					thresh_opt = utilities::optimalThreshGS(src, tgt, start, size);
+					cout << "thresh_opt = " << thresh_opt << endl;
+				}
 			}
 
 			// No valid function

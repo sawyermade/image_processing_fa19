@@ -27,6 +27,93 @@ int utilities::checkValue(int value)
 //MY STUFF
 /*-----------------------------------------------------------------------*/
 
+int utilities::optimalThreshGS(image& src, image& tgt, pair<int, int> start, pair<int, int> size){
+	// Local vars
+	vector<uint8_t> median_vec;
+	int median_val, thresh_prev, thresh_curr;
+	int len_vec, limit = 5;
+	int x1 = start.first, y1 = start.second, x2 = x1 + size.first, y2 = y1 + size.second;
+	int pixel_val, back_mean, forg_mean;
+	int back_count, forg_count, diff;
+
+	// Copies pixels to median vector
+	for(int j = y1; j < y2; j++)
+		for(int i = x1; i < x2; i++)
+			median_vec.push_back(src.getPixel(i, j));
+
+	// Sorts and gets median value
+	std::sort(median_vec.begin(), median_vec.end());
+	len_vec = median_vec.size();
+	if(len_vec % 2 == 0){
+		int m1, m2;
+		m2 = len_vec / 2;
+		m1 = m2 - 1;
+		median_val = (median_vec[m1] + median_vec[m2]) / 2;
+	}
+	else
+		median_val = median_vec[len_vec / 2];
+
+	//DEBUG
+	// cout << "Initial Median Value = " << median_val << endl;
+
+	// Iterates until difference below limit
+	thresh_curr = median_val;
+	do {
+		// Goes through every src pixel and sets background/foreground
+		back_mean = 0, forg_mean = 0;
+		back_count = 0; forg_count = 0;
+		for(int j = y1; j < y2; j++){
+			for(int i = x1; i < x2; i++){
+				// Gets pixel value
+				pixel_val = src.getPixel(i, j);
+
+				// Checks if forground or background
+				if(pixel_val <= thresh_curr){
+					back_mean += pixel_val;
+					back_count++;
+				}
+				else{
+					forg_mean += pixel_val;
+					forg_count++;
+				}
+			}
+		}
+
+		// Cals means and difference
+		back_mean /= back_count;
+		forg_mean /= forg_count;
+		thresh_prev = thresh_curr;
+		thresh_curr = (back_mean + forg_mean) / 2;
+		diff = std::abs(thresh_prev - thresh_curr);
+	}
+	while(diff >= limit);
+
+	// Returns optimal thresholding value
+	return thresh_curr;
+}
+
+void utilities::histCreate(image& src, int hist[256], pair<int, int> start, pair<int, int> stop) {
+	
+	stop.first += start.first, stop.second += start.second;
+
+	for(int i = start.first; i < stop.first; ++i)
+		for(int j = start.second; j < stop.second; ++j)
+			++hist[src.getPixel(i,j)];
+}
+
+//debug
+void utilities::histPrint(int hist[256]) {
+
+	int sum = 0;
+
+	for(int i = 0; i < 256; ++i) {
+		cout << hist[i] << endl;
+		sum += hist[i];
+	}
+
+	cout << "\nSUM = " << sum << endl;
+}
+
 // Checks for overlapping ROIs
 bool utilities::roi_overlap(vector<vector<int> > rois, vector<int> roi) {
 	// Gets roi values
@@ -83,8 +170,7 @@ void utilities::roiBinarizeRange(image &src, image &tgt, pair<int, int> startPoi
 
 
 //Binarize/Thresholding for Coloor images. Runs at O(n^2).
-void utilities::roiBinarizeColor(image &src, image &tgt, int threshold, int colors[], pair<int, int> startPoints, pair<int, int> sizexy)
-{
+void utilities::roiBinarizeColor(image &src, image &tgt, int threshold, int colors[], pair<int, int> startPoints, pair<int, int> sizexy) {
 	//variables for color distance and end points for ROI.
 	int dist;
 	pair<int, int> endPoints;
