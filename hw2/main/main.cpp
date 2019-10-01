@@ -146,13 +146,18 @@ int main (int argc, char** argv)
 			}
 
 			// Optimal Thresholding
-			else if(!strncasecmp(pch.c_str(),"oth",MAXLEN)) {
+			else if(!strncasecmp(pch.c_str(),"othgs",MAXLEN)) {
 				// Stuff
+				int limit;
 				int thresh_opt;
 
+				fp >> limit;
+
+				// If no overlap
 				if(!ovlap){
-					thresh_opt = utilities::optimalThreshGS(src, tgt, start, size);
-					cout << "thresh_opt = " << thresh_opt << endl;
+					thresh_opt = utilities::optimalThreshGS(src, tgt, start, size, limit);
+					utilities::threshGS(src, tgt, start, size, thresh_opt);
+					// cout << "thresh_opt = " << thresh_opt << endl;
 				}
 			}
 

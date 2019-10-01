@@ -27,6 +27,24 @@ int utilities::checkValue(int value)
 //MY STUFF
 /*-----------------------------------------------------------------------*/
 
+void utilities::threshGS(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh){
+	// Goes through ROI
+	uint8_t pixel_val;
+	int x1 = start.first, y1 = start.second, x2 = x1 + size.first, y2 = y1 + size.second;
+	for(int i = y1; i < y2; i++){
+		for(int j = x1; j < x2; j++){
+			// Gets pixel val
+			pixel_val = src.getPixel(i, j);
+
+			// Thresholds, less black
+			if(pixel_val < thresh)
+				tgt.setPixel(i, j, 0);
+			else
+				tgt.setPixel(i, j, 255);
+		}
+	}
+}
+
 int utilities::optimalThreshGS(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int limit){
 	// Local vars
 	vector<uint8_t> median_vec;
@@ -83,6 +101,47 @@ int utilities::optimalThreshGS(image& src, image& tgt, pair<int, int> start, pai
 
 	// Returns optimal thresholding value
 	return thresh_curr;
+}
+
+//
+void utilities::histSave(int hist[256], string& fname) {
+
+	//cout << "\nIn HistSave" << endl;
+
+	//normalize hist array;
+	int max = 0, min;
+
+	for(int i = 0; i < 256; ++i)
+		if(max < hist[i])
+			max = hist[i];
+
+	min = max;
+	for(int i = 0; i < 256; ++i)
+		if(min > hist[i])
+			min = hist[i];
+
+	//double ratio = 256.0 / (double)max;
+
+
+	//tgt.resize(HISTMAX,HISTMAX);
+	double ratio;
+	image tgt(HISTMAX,HISTMAX,fname);
+
+	//
+	for(int j = 0; j < HISTMAX; ++j) {
+
+		ratio = (double)(hist[j] - min) / (double)(max - min);
+		//cout << ratio << "  ";
+		for(int i = 0; i < HISTMAX; ++i) {
+
+			if(i < 255 - (255 *ratio))
+				tgt.setAll(i,j,BLACK);
+			else
+				tgt.setAll(i,j,WHITE);
+		}
+	}
+
+	tgt.save();
 }
 
 void utilities::histCreate(image& src, int hist[256], pair<int, int> start, pair<int, int> stop) {
@@ -206,17 +265,17 @@ void utilities::roiSmooth2DAdaptive(image& src, image& tgt, int ws, pair<int, in
 	end.second = start.second + size.second;
 
 	// Goes through all pixels in ROI
-	for(int j = start.second; j < end.second; ++j) {
+	for(int i = start.second; i < end.second; i++) {
 
-		for(int i = start.first; i < end.first; ++i) {
+		for(int j = start.first; j < end.first; j++) {
 			//sets m value
 			for(m = m_max; m > 0; m--){
 				// Checks top left areas
-				if(i - start.first < m || j - start.second < m)
+				if(j - start.first < m || i - start.second < m)
 					continue;
 
 				// Checks bottom right areas
-				if(end.first - i < m || end.second - j < m)
+				if(end.first - j < m || end.second - i < m)
 					continue;
 
 				// Found m that works, breaks loop
@@ -230,8 +289,8 @@ void utilities::roiSmooth2DAdaptive(image& src, image& tgt, int ws, pair<int, in
 			//calculates the windows' pixel sum for rgb/3 channel gray scale.
 			sumr = 0, sumg = 0, sumb = 0;
 			ws = 2*m + 1;
-			for(int y = j-m; y < j+m+1; ++y){
-				for(int x = i-m; x < i+m+1; ++x){
+			for(int x = i-m; x < i+m+1; x++){
+				for(int y = j-m; y < j+m+1; y++){
 					sumr += src.getPixel(x,y,RED);
 					sumg += src.getPixel(x,y,GREEN);
 					sumb += src.getPixel(x,y,BLUE);

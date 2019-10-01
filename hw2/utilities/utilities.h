@@ -24,6 +24,7 @@ class utilities
 		static void roiSmooth1DAdaptive(image& src, image& tgt, int ws, pair<int, int> start, pair<int, int> size);
 
 		// hw2
+		static void threshGS(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh);
 		static int optimalThreshGS(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int limit = 5);
 		static void histCreate(image& src, int hist[256], pair<int, int> start , pair<int, int> stop);
 		static void histPrint(int hist[256]); //debug

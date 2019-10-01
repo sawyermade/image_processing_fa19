@@ -1,10 +1,10 @@
 #sample-images/baboon.pgm output-images/baboon_roi5-bin.pgm 5 bin 50 50 100 100 120 130 bin 50 50 100 100 120 150 bin 100 25 50 100 100 200 bin 160 50 100 25 150 200 bin 160 175 100 25 50 200
-#sample-images/baboon.pgm output-images/baboon_roi3p.pgm 3 bin 50 50 100 100 120 130 2Dsmooth 200 200 200 150 5 1Dsmooth 350 350 100 100 5
-#sample-images/baboon.pgm output-images/baboon_roi8p.pgm 8 bin 50 50 100 100 120 130 2Dsmooth 200 200 200 150 5 2Dsmooth 350 350 100 100 5 bin 50 50 100 100 120 130 bin 50 50 100 100 120 150 bin 100 25 50 100 100 200 bin 160 50 100 25 150 200 bin 160 175 100 25 50 200
+sample-images/baboon.pgm output-images/baboon_roi3p.pgm 3 bin 50 50 100 100 120 130 2Dsmooth 0 200 400 150 13 1Dsmooth 350 350 100 100 13
+#sample-images/baboon.pgm output-images/baboon_roi8p.pgm 8 bin 50 50 100 100 120 130 2Dsmooth 200 200 200 150 13 2Dsmooth 350 350 100 100 13 bin 50 50 100 100 120 130 bin 50 50 100 100 120 150 bin 100 25 50 100 100 200 bin 160 50 100 25 150 200 bin 160 175 100 25 50 200
 #sample-images/baboon.pgm output-images/baboon_roi1-2ds.pgm 1 2Dsmooth 50 100 150 300 7
 #sample-images/baboon.ppm output-images/baboon_roi1-1ds.ppm 1 1Dsmooth 50 100 150 300 7
 #sample-images/baboon.pgm output-images/baboon_roi2-2ds.pgm 1 2Dsmooth 0 0 512 512 7
 #sample-images/baboon.ppm output-images/baboon_roi2-1ds.ppm 1 1Dsmooth 0 0 512 512 7
 #sample-images/baboon.ppm output-images/baboon_binc.ppm 1 binc 0 0 512 512 200 0 255 255
 #sample-images/trump.ppm output-images/trump_binc.ppm 1 binc 0 0 3204 4272 120 128 0 128
-sample-images/baboon.pgm output-images/baboon_oth-1.pgm 1 oth 50 50 200 200
+sample-images/baboon.pgm output-images/baboon_othgs-1.pgm 2 othgs 300 80 180 200 1 othgs 0 0 100 300 5
