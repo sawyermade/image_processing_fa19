@@ -148,9 +148,9 @@ int main (int argc, char** argv)
 			// Optimal Thresholding
 			else if(!strncasecmp(pch.c_str(),"othgs",MAXLEN)) {
 				// Stuff
-				int limit;
-				int thresh_opt;
+				int limit, thresh_opt;
 
+				// Gets difference limit
 				fp >> limit;
 
 				// If no overlap
