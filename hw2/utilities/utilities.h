@@ -24,12 +24,17 @@ class utilities
 		static void roiSmooth1DAdaptive(image& src, image& tgt, int ws, pair<int, int> start, pair<int, int> size);
 
 		// hw2
+		static void addVectorToImage(image& tgt, vector<vector<int> >& pixels, pair<int,int> start, pair<int,int> size);
+		static vector<vector<int> > threshGSbr(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh);
+		static vector<vector<int> > threshGSfg(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh);
 		static void threshGS(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh);
-		static int optimalThreshGS(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int limit = 5);
+		static int optimalThreshGS(image& src, pair<int, int> start, pair<int, int> size, int limit = 5);
 		static void histCreate(image& src, int hist[256], pair<int, int> start , pair<int, int> stop);
+		static void histCreate(vector<vector<int> >& src, int hist[256], pair<int, int> start , pair<int, int> stop);
 		static void histPrint(int hist[256]); //debug
 		static void histSave(int hist[256], string& fname);
-		static void histStretchGS(image& src,image& tgt,pair<int,int> ab,pair<int,int> cd,pair<int,int> start,pair<int,int> stop);
+		static void histStretchGS(image& src,image& tgt, pair<int,int> start, pair<int,int> stop, pair<int,int> ab, pair<int,int> cd = {0, 255});
+		static void histStretchGS(vector<vector<int> >& tgt, pair<int,int> start, pair<int,int> stop, pair<int,int> ab, pair<int,int> cd = {0, 255});
 		static void stringToChar(string&,char*);
 		static void histSave(int hbefore[256],int hafter[256],string& fname);
 		static bool stretchInBounds(image& src, string& infile, pair<int,int> start, pair<int,int> size, pair<int,int> ab, pair<int,int> cd);

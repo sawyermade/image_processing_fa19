@@ -12,6 +12,7 @@ hsi::hsi(void) {
 hsi::hsi(image& src) {
 
 	this->convertRGB(src);
+	this->fname = src.getFname();
 }
 
 hsi::hsi(int row, int col, string& fnamestr) {
@@ -193,6 +194,16 @@ int hsi::checkValue(int value) {
 }
 
 //GET FUNCTIONS
+vector< vector<double> > hsi::getHvec() {
+	return hsiH;
+}
+vector< vector<double> > hsi::getSvec() {
+	return hsiS;
+}
+vector< vector<double> > hsi::getIvec() {
+	return hsiI;
+}
+
 double hsi::getH(int i, int j) {
 	return hsiH[i][j];
 }
@@ -220,15 +231,15 @@ void hsi::stretchH(pair<int,int> ab, pair<int,int> cd, pair<int,int> start, pair
 	pair<int,int> stop;
 	double ratio, tempd;
 
-	stop.first = start.first + size.first;
-	stop.second = start.second + size.second;
+	// stop.first = start.first + size.first;
+	// stop.second = start.second + size.second;
 
 	ratio = (double)(cd.second - cd.first) / (double)(ab.second - ab.first);
 
 	//converts pixels using Inew = (d-c)/(b-a)[Iij - a] + c
-	for(int i = start.first; i < stop.first; ++i) {
+	for(int i = start.second; i < size.second + start.second; ++i) {
 
-		for(int j = start.second; j < stop.second; ++j) {
+		for(int j = start.first; j < size.first + start.first; ++j) {
 
 			if(hsiH[i][j] < ab.first)
 				hsiH[i][j] = MINHUE;
@@ -251,15 +262,15 @@ void hsi::stretchS(pair<int,int> ab, pair<int,int> cd, pair<int,int> start, pair
 	pair<int,int> stop;
 	double ratio, tempd;
 
-	stop.first = start.first + size.first;
-	stop.second = start.second + size.second;
+	// stop.first = start.first + size.first;
+	// stop.second = start.second + size.second;
 
 	ratio = ((double)cd.second - (double)cd.first) / ((double)ab.second - (double)ab.first);
 
 	//converts pixels using Inew = (d-c)/(b-a)[Iij - a] + c
-	for(int i = start.first; i < stop.first; ++i) {
+	for(int i = start.second; i < size.second + start.second; ++i) {
 
-		for(int j = start.second; j < stop.second; ++j) {
+		for(int j = start.first; j < size.first + start.first; ++j) {
 			
 			norm = 255*hsiS[i][j];
 			if(norm < ab.first)
@@ -283,21 +294,34 @@ void hsi::stretchI(pair<int,int> ab, pair<int,int> cd, pair<int,int> start, pair
 	pair<int,int> stop;
 	double ratio, tempd;
 
-	stop.first = start.first + size.first;
-	stop.second = start.second + size.second;
+	// stop.first = start.first + size.first;
+	// stop.second = start.second + size.second;
+	// cout << "start = " << start.first << ", " << start.second << endl;
+	// cout << "stop = " << size.first + start.first << ", " << size.second + start.second << endl;
+	// cout << "vec dim = " << hsiI.size() << ", " << hsiI[0].size() << endl;
 
 	ratio = (double)(cd.second - cd.first) / (double)(ab.second - ab.first);
-
+	// cout << "ratio = " << ratio << endl;
 	//converts pixels using Inew = (d-c)/(b-a)[Iij - a] + c
-	for(int i = start.first; i < stop.first; ++i) {
+	int minn = 1000, maxx = -1;
+	for(int i = start.second; i < size.second + start.second; ++i) {
 
-		for(int j = start.second; j < stop.second; ++j) {
-			
-			if(hsiI[i][j] < ab.first)
-				hsiI[i][j] = BLACK;
+		for(int j = start.first; j < size.first + start.first; ++j) {
+			if(hsiI[i][j] < minn)
+				minn = hsiI[i][j];
+			if(hsiI[i][j] > maxx)
+				maxx = hsiI[i][j];
 
-			else if(hsiI[i][j] > ab.second)
-				hsiI[i][j] = WHITE;
+
+			if(hsiI[i][j] < ab.first){
+				hsiI[i][j] = cd.first;
+
+			}
+
+			else if(hsiI[i][j] > ab.second){
+				hsiI[i][j] = cd.second;
+
+			}
 
 			else {
 				tempd = ratio * (double)(hsiI[i][j] - ab.first) + cd.first;
@@ -306,6 +330,8 @@ void hsi::stretchI(pair<int,int> ab, pair<int,int> cd, pair<int,int> start, pair
 			}
 		}
 	}
+
+	// cout << "min, max = " << minn << ", " << maxx << endl;
 }
 
 void hsi::stretchHSI(pair<int,int> ab, pair<int,int> cd, pair<int,int> start, pair<int,int> size) {

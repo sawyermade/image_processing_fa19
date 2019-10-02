@@ -57,6 +57,9 @@ class hsi {
 
 
 		//get functions.
+		vector< vector<double> > getHvec();
+		vector< vector<double> > getSvec();
+		vector< vector<double> > getIvec();
 		double getH(int i, int j);
 		double getS(int i, int j); 
 		int getI(int i, int j);

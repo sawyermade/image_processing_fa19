@@ -27,6 +27,70 @@ int utilities::checkValue(int value)
 //MY STUFF
 /*-----------------------------------------------------------------------*/
 
+void utilities::addVectorToImage(image& tgt, vector<vector<int> >& pixels, pair<int,int> start, pair<int,int> size) {
+	// Local vars
+	int pixel_val, x1 = start.first, y1 = start.second, x2 = x1 + size.first, y2 = y1 + size.second;
+
+	// Goes through ROI and copies pixels
+	for(int i = y1; i < y2; i++){
+		for(int j = x1; j < x2; j++){
+			// Gets pixel val
+			pixel_val = pixels[i-y1][j-x1];
+
+			// Checks if greater than -1
+			if(pixel_val > -1) {
+				tgt.setPixel(i, j, pixel_val);
+			}
+
+		}
+	}
+}
+
+vector<vector<int> > utilities::threshGSbr(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh){
+	// Goes through ROI
+	uint8_t pixel_val;
+	int x1 = start.first, y1 = start.second, x2 = x1 + size.first, y2 = y1 + size.second;
+	vector<vector<int> > pixels(y2-y1, vector<int>(x2-x1, -1));
+	for(int i = y1; i < y2; i++){
+		for(int j = x1; j < x2; j++){
+			// Gets pixel val
+			pixel_val = src.getPixel(i, j);
+
+			// Thresholds, less black
+			if(pixel_val >= thresh){
+				tgt.setPixel(i, j, 0);
+			}
+			else{
+				pixels[i-y1][j-x1] = pixel_val;
+			}
+		}
+	}
+
+	return pixels;
+}
+
+vector<vector<int> > utilities::threshGSfg(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh){
+	// Goes through ROI
+
+	uint8_t pixel_val;
+	int x1 = start.first, y1 = start.second, x2 = x1 + size.first, y2 = y1 + size.second;
+	vector<vector<int> > pixels(y2-y1, vector<int>(x2-x1, -1));
+	for(int i = y1; i < y2; i++){
+		for(int j = x1; j < x2; j++){
+			// Gets pixel val
+			pixel_val = src.getPixel(i, j);
+
+			// Thresholds, less black
+			if(pixel_val < thresh)
+				tgt.setPixel(i, j, 0);
+			else
+				pixels[i-y1][j-x1] = pixel_val;
+		}
+	}
+
+	return pixels;
+}
+
 void utilities::threshGS(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh){
 	// Goes through ROI
 	uint8_t pixel_val;
@@ -45,17 +109,19 @@ void utilities::threshGS(image& src, image& tgt, pair<int, int> start, pair<int,
 	}
 }
 
-int utilities::optimalThreshGS(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int limit){
+int utilities::optimalThreshGS(image& src, pair<int, int> start, pair<int, int> size, int limit){
 	// Local vars
+
 	vector<uint8_t> median_vec;
 	int median_val, thresh_prev, thresh_curr, len_vec;
 	int x1 = start.first, y1 = start.second, x2 = x1 + size.first, y2 = y1 + size.second;
 	int pixel_val, back_mean, back_count, forg_mean, forg_count, diff;
 
 	// Copies pixels to median vector
-	for(int j = y1; j < y2; j++)
-		for(int i = x1; i < x2; i++)
+	for(int i = y1; i < y2; i++)
+		for(int j = x1; j < x2; j++)
 			median_vec.push_back(src.getPixel(i, j));
+	
 
 	// Sorts and gets median value
 	std::sort(median_vec.begin(), median_vec.end());
@@ -73,8 +139,8 @@ int utilities::optimalThreshGS(image& src, image& tgt, pair<int, int> start, pai
 		// Goes through every src pixel and sets background/foreground
 		back_mean = 0, forg_mean = 0;
 		back_count = 0; forg_count = 0;
-		for(int j = y1; j < y2; j++){
-			for(int i = x1; i < x2; i++){
+		for(int i = y1; i < y2; i++){
+			for(int j = x1; j < x2; j++){
 				// Gets pixel value
 				pixel_val = src.getPixel(i, j);
 
@@ -102,6 +168,78 @@ int utilities::optimalThreshGS(image& src, image& tgt, pair<int, int> start, pai
 	// Returns optimal thresholding value
 	return thresh_curr;
 }
+
+void utilities::stringToChar(string& str, char* ch) {
+
+	for(int i = 0; i < (int)str.size(); ++i)
+		ch[i] = str[i];
+	ch[str.size()] = '\0';
+}
+
+void utilities::histStretchGS(image& src, image& tgt, pair<int,int> start, pair<int,int> stop, pair<int,int> ab, pair<int,int> cd) {
+
+
+	double ratio, tempd;
+	int temp;
+
+	stop.first += start.first;
+	stop.second += start.second;
+
+	ratio = ((double)cd.second - (double)cd.first) / ((double)ab.second - (double)ab.first);
+
+	//converts pixels using Inew = (d-c)/(b-a)[Iij - a] + c
+	for(int i = start.second; i < stop.second; ++i) {
+		for(int j = start.first; j < stop.first; ++j) {
+			
+			if(src.getPixel(i,j) < ab.first)
+				tgt.setPixel(i,j,cd.first);
+
+			else if(src.getPixel(i,j) > ab.second)
+				tgt.setPixel(i,j,cd.second);
+
+			else {
+				tempd = ratio * (double)(src.getPixel(i,j) - ab.first) + cd.first;
+				temp = tempd;
+				tgt.setPixel(i,j,checkValue(temp));
+			}
+		}
+	}
+}
+
+void utilities::histStretchGS(vector<vector<int> >& tgt, pair<int,int> start, pair<int,int> stop, pair<int,int> ab, pair<int,int> cd) {
+
+
+	double ratio, tempd;
+	int temp, pixel_val;
+
+	stop.first += start.first;
+	stop.second += start.second;
+
+	ratio = ((double)cd.second - (double)cd.first) / ((double)ab.second - (double)ab.first);
+
+	//converts pixels using Inew = (d-c)/(b-a)[Iij - a] + c
+	for(int i = start.second; i < stop.second; ++i) {
+		for(int j = start.first; j < stop.first; ++j) {
+			// Gets pixel val
+			pixel_val = tgt[i][j];
+			if(pixel_val < 0)
+				continue;
+			
+			if(pixel_val < ab.first)
+				tgt[i][j] = cd.first;
+
+			else if(pixel_val > ab.second)
+				tgt[i][j] = cd.second;
+
+			else {
+				tempd = ratio * (double)(tgt[i][j] - ab.first) + cd.first;
+				temp = tempd;
+				tgt[i][j] = temp;
+			}
+		}
+	}
+}
+
 
 //
 void utilities::histSave(int hist[256], string& fname) {
@@ -144,13 +282,89 @@ void utilities::histSave(int hist[256], string& fname) {
 	tgt.save();
 }
 
+void utilities::histSave(int hbefore[256],int hafter[256],string& fname) {
+
+	//normalize hist array;
+	int maxbef = 0, maxaft = 0, minbef, minaft;
+
+	for(int i = 0; i < 256; ++i) {
+		if(maxbef < hbefore[i])
+			maxbef = hbefore[i];
+		if(maxaft < hafter[i])
+			maxaft = hafter[i];
+	}
+
+	minbef = maxbef, minaft = maxaft;
+	for(int i = 0; i < 256; ++i) {
+		if(minbef > hbefore[i])
+			minbef = hbefore[i];
+		if(minaft > hafter[i])
+			minaft = hafter[i];
+	}
+
+	//variables for the two histograms before and after.
+	int size = 512;
+	double ratio, ratioa;
+	image tgt(size,size,fname), temp(size,size);
+
+	
+	for(int j = 0; j < HISTMAX; ++j) {
+
+		ratio = (double)(hbefore[j] - minbef) / (double)(maxbef - minbef);
+		ratioa = (double)(hafter[j] - minaft) / (double)(maxaft - minaft);
+		//cout << ratio << "  ";
+		for(int i = 0; i < size; ++i) {
+
+			if(i < (size-1) - ((size-1) *ratio)) {
+				//tgt.setPixel(i,j,BLACK); //for size = 256
+
+				tgt.setAll(i,j*2,BLACK);
+				tgt.setAll(i,j*2+1,BLACK);
+			}
+			else {
+				//tgt.setPixel(i,j,WHITE); //for size = 256
+
+				tgt.setAll(i,j*2,WHITE);
+				tgt.setAll(i,j*2+1,WHITE);
+			}
+
+			if(i < (size-1) - ((size-1) *ratioa)) {
+				//temp.setPixel(i,j,BLACK); //for size = 256
+
+				temp.setAll(i,j*2,BLACK);
+				temp.setAll(i,j*2+1,BLACK);
+			}
+			else {
+				//temp.setPixel(i,j,WHITE); //for size = 256
+
+				temp.setAll(i,j*2,WHITE);
+				temp.setAll(i,j*2+1,WHITE);
+			}
+		}
+	}
+
+	tgt += temp;
+	tgt.save();
+}
+
 void utilities::histCreate(image& src, int hist[256], pair<int, int> start, pair<int, int> stop) {
 	
 	stop.first += start.first, stop.second += start.second;
 
-	for(int i = start.first; i < stop.first; ++i)
-		for(int j = start.second; j < stop.second; ++j)
+	for(int i = start.second; i < stop.second; ++i)
+		for(int j = start.first; j < stop.first; ++j)
 			++hist[src.getPixel(i,j)];
+}
+
+void utilities::histCreate(vector<vector<int> >& src, int hist[256], pair<int, int> start, pair<int, int> stop) {
+	
+	stop.first += start.first, stop.second += start.second;
+
+	for(int i = start.second; i < stop.second; ++i)
+		for(int j = start.first; j < stop.first; ++j){
+			if(src[i][j] > -1)
+				++hist[src[i][j]];
+		}
 }
 
 //debug
