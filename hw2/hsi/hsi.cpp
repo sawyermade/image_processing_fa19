@@ -303,16 +303,9 @@ void hsi::stretchI(pair<int,int> ab, pair<int,int> cd, pair<int,int> start, pair
 	ratio = (double)(cd.second - cd.first) / (double)(ab.second - ab.first);
 	// cout << "ratio = " << ratio << endl;
 	//converts pixels using Inew = (d-c)/(b-a)[Iij - a] + c
-	int minn = 1000, maxx = -1;
 	for(int i = start.second; i < size.second + start.second; ++i) {
 
 		for(int j = start.first; j < size.first + start.first; ++j) {
-			if(hsiI[i][j] < minn)
-				minn = hsiI[i][j];
-			if(hsiI[i][j] > maxx)
-				maxx = hsiI[i][j];
-
-
 			if(hsiI[i][j] < ab.first){
 				hsiI[i][j] = cd.first;
 
