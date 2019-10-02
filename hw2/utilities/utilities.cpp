@@ -178,7 +178,6 @@ void utilities::stringToChar(string& str, char* ch) {
 
 void utilities::histStretchGS(image& src, image& tgt, pair<int,int> start, pair<int,int> stop, pair<int,int> ab, pair<int,int> cd) {
 
-
 	double ratio, tempd;
 	int temp;
 
@@ -207,7 +206,6 @@ void utilities::histStretchGS(image& src, image& tgt, pair<int,int> start, pair<
 }
 
 void utilities::histStretchGS(vector<vector<int> >& tgt, pair<int,int> start, pair<int,int> stop, pair<int,int> ab, pair<int,int> cd) {
-
 
 	double ratio, tempd;
 	int temp, pixel_val;
