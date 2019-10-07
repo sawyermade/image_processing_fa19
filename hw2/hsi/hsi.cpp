@@ -290,9 +290,9 @@ void hsi::stretchS(pair<int,int> ab, pair<int,int> cd, pair<int,int> start, pair
 
 void hsi::stretchI(pair<int,int> ab, pair<int,int> cd, pair<int,int> start, pair<int,int> size) {
 
-	//int temp;
-	pair<int,int> stop;
-	double ratio, tempd;
+	int temp;
+	// pair<int,int> stop;
+	double ratio, tempd, val;
 
 	// stop.first = start.first + size.first;
 	// stop.second = start.second + size.second;
@@ -303,27 +303,31 @@ void hsi::stretchI(pair<int,int> ab, pair<int,int> cd, pair<int,int> start, pair
 	ratio = (double)(cd.second - cd.first) / (double)(ab.second - ab.first);
 	// cout << "ratio = " << ratio << endl;
 	//converts pixels using Inew = (d-c)/(b-a)[Iij - a] + c
+	// int num_rows = hsiI.size(), num_cols = hsiI[0].size();
+	// cout << "num_rows, num_cols = " << num_rows << ", " << num_cols << endl;
 	for(int i = start.second; i < size.second + start.second; ++i) {
-
+		
 		for(int j = start.first; j < size.first + start.first; ++j) {
+			val = hsiI[i][j];
 			if(hsiI[i][j] < ab.first){
 				hsiI[i][j] = cd.first;
 
 			}
 
-			else if(hsiI[i][j] > ab.second){
+			if(hsiI[i][j] > ab.second){
 				hsiI[i][j] = cd.second;
 
 			}
 
 			else {
-				tempd = ratio * (double)(hsiI[i][j] - ab.first) + cd.first;
-				//temp = tempd;
-				hsiI[i][j] = tempd;
+				tempd = ratio * (double)(val - ab.first) + cd.first;
+				temp = tempd;
+				// cout << "i, j = " << i << ", " << j << endl;
+				hsiI[i][j] = temp;
 			}
 		}
 	}
-
+	// cout << "num_rows, num_cols = " << num_rows << ", " << num_cols << endl;
 	// cout << "min, max = " << minn << ", " << maxx << endl;
 }
 

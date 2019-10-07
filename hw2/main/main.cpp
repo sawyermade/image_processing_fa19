@@ -42,7 +42,7 @@ int main (int argc, char** argv)
 			continue;
 		}
 
-		//gets src image filename.
+		// //gets src image filename.
 		fp >> infile;
 		if(infile[0] == '#') {
 			getline(fp, strtemp);
@@ -210,7 +210,8 @@ int main (int argc, char** argv)
 				// Stuff
 				pair<int, int> ab;
 				int hist_before[256] = {0}, hist_after[256] = {0};
-				string hist_fname = outfile + "-Histogram.pgm";
+				string stemp(to_string(count));
+				string hist_fname = outfile + "-Histogram-" + stemp + ".pgm";
 
 				// cout << "DEBUG 1\n";
 
@@ -232,7 +233,8 @@ int main (int argc, char** argv)
 				// Stuff
 				pair<int, int> ab, cd;
 				int hist_before[256] = {0}, hist_after[256] = {0};
-				string hist_fname = outfile + "-Histogram.pgm";
+				string stemp(to_string(count));
+				string hist_fname = outfile + "-Histogram-" + stemp + ".pgm";
 
 				// cout << "DEBUG 1\n";
 
@@ -257,12 +259,13 @@ int main (int argc, char** argv)
 				int hist_before_back[256] = {0}, hist_after_back[256] = {0};
 				int hist_before_forg[256] = {0}, hist_after_forg[256] = {0};
 				int thresh_opt;
-				string hist_fname_back = outfile + "-Histogram_background.pgm";
-				string hist_fname_forg = outfile + "-Histogram_forground.pgm";
-				string hist_fname_back_hs = outfile + "-hs_background.pgm";
-				string hist_fname_forg_hs = outfile + "-hs_forground.pgm";
-				string hist_fname_back_nhs = outfile + "-background.pgm";
-				string hist_fname_forg_nhs = outfile + "-forground.pgm";
+				string stemp(to_string(count));
+				string hist_fname_back = outfile + "-Histogram-" + stemp + "_background.pgm";
+				string hist_fname_forg = outfile + "-Histogram-" + stemp + "_forground.pgm";
+				string hist_fname_back_hs = outfile + "-hs-" + stemp + "_background.pgm";
+				string hist_fname_forg_hs = outfile + "-hs-" + stemp + "_forground.pgm";
+				string hist_fname_back_nhs = outfile + "-background-" + stemp + ".pgm";
+				string hist_fname_forg_nhs = outfile + "-forground-" + stemp + ".pgm";
 				image back_img, forg_img;
 				
 				back_img = src, forg_img = src;
@@ -285,10 +288,10 @@ int main (int argc, char** argv)
 					ab_forg.first = 1000, ab_forg.second = 0;
 					for(int i = 0; i < (int)back_vec.size(); i++)
 						for(int j = 0; j < (int)back_vec[0].size(); j++){
-							if(back_vec[i][i] < ab_back.first && back_vec[i][i] > -1)
+							if(back_vec[i][j] < ab_back.first && back_vec[i][j] > -1)
 								ab_back.first = back_vec[i][j];
-							if(back_vec[i][i] > ab_back.second)
-								ab_back.second = back_vec[i][i];
+							if(back_vec[i][j] > ab_back.second)
+								ab_back.second = back_vec[i][j];
 
 							if(forg_vec[i][j] < ab_forg.first && forg_vec[i][j] > -1)
 								ab_forg.first = forg_vec[i][j];
@@ -342,12 +345,13 @@ int main (int argc, char** argv)
 				int hist_before_back[256] = {0}, hist_after_back[256] = {0};
 				int hist_before_forg[256] = {0}, hist_after_forg[256] = {0};
 				int thresh_opt;
-				string hist_fname_back = outfile + "-Histogram_background.pgm";
-				string hist_fname_forg = outfile + "-Histogram_forground.pgm";
-				string hist_fname_back_hs = outfile + "-hs_background.pgm";
-				string hist_fname_forg_hs = outfile + "-hs_forground.pgm";
-				string hist_fname_back_nhs = outfile + "-background.pgm";
-				string hist_fname_forg_nhs = outfile + "-forground.pgm";
+				string stemp(to_string(count));
+				string hist_fname_back = outfile + "-Histogram-" + stemp + "_background.pgm";
+				string hist_fname_forg = outfile + "-Histogram-" + stemp + "_forground.pgm";
+				string hist_fname_back_hs = outfile + "-hs-" + stemp + "_background.pgm";
+				string hist_fname_forg_hs = outfile + "-hs-" + stemp + "_forground.pgm";
+				string hist_fname_back_nhs = outfile + "-background-" + stemp + ".pgm";
+				string hist_fname_forg_nhs = outfile + "-forground-" + stemp + ".pgm";
 				image back_img, forg_img;
 				
 				back_img = src, forg_img = src;
@@ -408,7 +412,8 @@ int main (int argc, char** argv)
 				// Stuff
 				pair<int, int> ab;
 				int hist_before[256] = {0}, hist_after[256] = {0};
-				string hist_fname = outfile + "-Histogram.pgm";
+				string stemp(to_string(count));
+				string hist_fname = outfile + "-Histogram-" + stemp + ".pgm";
 				hsi src_hsi = tgt;
 				vector<vector<double> > vecI;
 
@@ -441,7 +446,8 @@ int main (int argc, char** argv)
 
 					utilities::histCreate(src, hist_before, start, size);
 
-					utilities::histCreate(tgt, hist_after, start, size);
+					// utilities::histCreate(tgt, hist_after, start, size);
+					src_hsi.histI(hist_after);
 
 					utilities::histSave(hist_before, hist_after, hist_fname);
 
@@ -453,7 +459,8 @@ int main (int argc, char** argv)
 				// Stuff
 				pair<int, int> ab, ab2;
 				int hist_before[256] = {0}, hist_after[256] = {0};
-				string hist_fname = outfile + "-Histogram.pgm";
+				string stemp(to_string(count));
+				string hist_fname = outfile + "-Histogram-" + stemp + ".pgm";
 				hsi src_hsi = tgt;
 				vector<vector<double> > vecI, vecH;
 
@@ -494,10 +501,33 @@ int main (int argc, char** argv)
 					src_hsi.stretchH(ab2, pair<int,int>{0, 360}, start, size);
 					tgt = src_hsi;
 					utilities::histCreate(src, hist_before, start, size);
-					utilities::histCreate(tgt, hist_after, start, size);
+					// utilities::histCreate(tgt, hist_after, start, size);
+					src_hsi.histI(hist_after);
 					utilities::histSave(hist_before, hist_after, hist_fname);
 				}
 			}
+
+			// // Histogram equalization
+			// else if(!strncasecmp(pch.c_str(),"histgs",MAXLEN)) {
+			// 	// Stuff
+			// 	int hist_before[256] = {0}, hist_after[256] = {0};
+			// 	string stemp(to_string(count));
+			// 	string hist_fname = outfile + "-Histogram-" + stemp + ".pgm";
+
+			// 	// cout << "DEBUG 1\n";
+
+			// 	// Gets difference limit
+			// 	fp >> ab.first >> ab.second;
+
+			// 	// If no overlap
+			// 	if(!ovlap){
+
+			// 		utilities::histStretchGS(src, tgt, start, size, ab);
+			// 		utilities::histCreate(src, hist_before, start, size);
+			// 		utilities::histCreate(tgt, hist_after, start, size);
+			// 		utilities::histSave(hist_before, hist_after, hist_fname);
+			// 	}
+			// }
 
 			// No valid function
 			else {

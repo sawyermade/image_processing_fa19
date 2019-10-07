@@ -429,7 +429,7 @@ image& image::operator+=(image& right) {
 
 	for(int i = 0; i < right.data.numRows; ++i)
 		for(int j = temp.data.numColumns + graypad; j < this->data.numColumns; ++j)
-			this->setPixel(i,j,right.getPixel(i,j-temp.data.numColumns)), this->setPixel(i,j,GREEN,right.getPixel(i,j-temp.data.numColumns,GREEN)), this->setPixel(i,j,BLUE,right.getPixel(i,j-temp.data.numColumns,BLUE));
+			this->setPixel(i,j,right.getPixel(i,j-temp.data.numColumns-graypad)), this->setPixel(i,j,GREEN,right.getPixel(i,j-temp.data.numColumns-graypad,GREEN)), this->setPixel(i,j,BLUE,right.getPixel(i,j-temp.data.numColumns-graypad,BLUE));
 
 	return *this;
 }

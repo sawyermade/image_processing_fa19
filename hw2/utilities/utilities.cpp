@@ -215,6 +215,8 @@ void utilities::histStretchGS(vector<vector<int> >& tgt, pair<int,int> start, pa
 
 	ratio = ((double)cd.second - (double)cd.first) / ((double)ab.second - (double)ab.first);
 
+	// cout << "a, b = " << ab.first << ", " << ab.second << endl;
+
 	//converts pixels using Inew = (d-c)/(b-a)[Iij - a] + c
 	for(int i = start.second; i < stop.second; ++i) {
 		for(int j = start.first; j < stop.first; ++j) {
@@ -347,10 +349,10 @@ void utilities::histSave(int hbefore[256],int hafter[256],string& fname) {
 
 void utilities::histCreate(image& src, int hist[256], pair<int, int> start, pair<int, int> stop) {
 	
-	stop.first += start.first, stop.second += start.second;
+	// stop.first += start.first, stop.second += start.second;
 
-	for(int i = start.second; i < stop.second; ++i)
-		for(int j = start.first; j < stop.first; ++j)
+	for(int i = start.second; i < stop.second + start.second; ++i)
+		for(int j = start.first; j < stop.first + start.first; ++j)
 			++hist[src.getPixel(i,j)];
 }
 
