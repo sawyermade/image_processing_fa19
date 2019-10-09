@@ -1,5 +1,5 @@
 # Optimal thresh binarization
-sample-images/baboon.pgm output-images/baboon_othgs-1.pgm 2 othgs 300 80 180 200 othgs 0 0 100 300
+sample-images/baboon.pgm output-images/baboon_othgs-1.pgm 2 othgs 256 256 256 256 othgs 0 0 256 256
 sample-images/slope.pgm output-images/slope_othgs-1.pgm 1 othgs 30 30 740 470
 
 # Optimal thresh background and foreground
