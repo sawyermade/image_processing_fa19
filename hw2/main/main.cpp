@@ -157,7 +157,8 @@ int main (int argc, char** argv)
 				int limit, thresh_opt;
 
 				// Gets difference limit
-				fp >> limit;
+				// fp >> limit;
+				limit = 5;
 
 				// If no overlap
 				if(!ovlap){
@@ -175,7 +176,8 @@ int main (int argc, char** argv)
 				// cout << "DEBUG 1\n";
 
 				// Gets difference limit
-				fp >> limit;
+				// fp >> limit;
+				limit = 5;
 
 				// If no overlap
 				if(!ovlap){
@@ -194,7 +196,8 @@ int main (int argc, char** argv)
 				// cout << "DEBUG 1\n";
 
 				// Gets difference limit
-				fp >> limit;
+				// fp >> limit;
+				limit = 5;
 
 				// If no overlap
 				if(!ovlap){
