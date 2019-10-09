@@ -11,7 +11,7 @@ if __name__ == '__main__':
 	# Get unique vals, freq of vals, and gets percentages of freq/total_pixels
 	rk, nk = np.unique(img, return_counts=True)
 	pk = nk / img.size
-	print(pk)
+	print(rk)
 	
 	# Gets communative sum of percentages ascending order sorted
 	# Multiplies sk by max_intensity and rounds to integer
@@ -19,7 +19,7 @@ if __name__ == '__main__':
 	sk = np.cumsum(pk)
 	mul = sk * max_intensity
 	map_array = np.round(mul)
-	print(sk)
+	# print(sk)
 
 	# Remaps every pixel and saves to new image
 	for i in range(img.shape[0]):
