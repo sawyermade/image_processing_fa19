@@ -1,4 +1,4 @@
-# Image Processing Grad USF Fall 2019 HW1
+# Image Processing Grad USF Fall 2019 HW2
 ## Processes:
 histgs = grayscale linear histogram stretching
 histgsbl = grayscale bilinear historgram stretching
