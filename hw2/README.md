@@ -46,7 +46,6 @@ Output images written in output-images/ directory after execution
 ```
 # Clone from github if needed
 git clone https://github.com/sawyermade/image_processing_fa19.git 
-
 cd image_processing_fa19/hw2
 make
 ./hw parameters.txt
