@@ -3,21 +3,34 @@
 histgs = grayscale linear histogram stretching
 
 histgsbl = grayscale bilinear historgram stretching
+
 othgs = optimal thresholding binarization, black = background, white = foreground
+
 othbr = creates background image based off optimal threshold
+
 othfg = creates forground image based off optimal threshold
+
 histgsoth = stretches both back/fore ground images, saves them, and before/after histograms, and combines
+
 histhsii = HSI histogram stretching on I
+
 histhsihi = HSI histogram stretching on I and H
 
 ## Parameters for Processes: WS is odd number that will be squared
 histgs X Y Sx Sy a b
+
 histgsbl X Y Sx Sy a b c d
+
 othgs X Y Sx Sy
+
 othbr X Y Sx Sy 
+
 othfg X Y Sx Sy 
+
 histgsoth X Y Sx Sy 
+
 histhsii X Y Sx Sy 
+
 histhsihi X Y Sx Sy Hmin Hmax
 
 ## Input File Format:
