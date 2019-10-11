@@ -1,6 +1,7 @@
 # Image Processing Grad USF Fall 2019 HW2
 ## Processes:
 histgs = grayscale linear histogram stretching
+
 histgsbl = grayscale bilinear historgram stretching
 othgs = optimal thresholding binarization, black = background, white = foreground
 othbr = creates background image based off optimal threshold
