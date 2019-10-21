@@ -1,0 +1,23 @@
+# Optimal thresh binarization
+sample-images/baboon.pgm output-images/baboon_othgs-1.pgm 2 othgs 256 256 256 256 othgs 0 0 256 256
+sample-images/slope.pgm output-images/slope_othgs-1.pgm 1 othgs 30 30 740 470
+
+# Optimal thresh background and foreground
+sample-images/slope.pgm output-images/slope_othbr-1.pgm 1 othbr 30 30 740 470
+sample-images/slope.pgm output-images/slope_othfg-1.pgm 1 othfg 30 30 740 470
+
+# Historgram stretching grayscale linear
+sample-images/slope.pgm output-images/slope_histgs-1.pgm 1 histgs 0 0 800 534 100 200
+sample-images/slope.pgm output-images/slope_histgs-2.pgm 1 histgs 0 0 800 534 100 150
+
+# Historgram stretching grayscale bilinear
+sample-images/slope.pgm output-images/slope_histgsbl-1.pgm 1 histgsbl 0 0 800 534 100 150 50 200
+sample-images/slope.pgm output-images/slope_histgsbl-2.pgm 1 histgsbl 0 0 800 534 100 200 50 240
+
+# Optimal thresh grayscale background/foreground and combined
+sample-images/slope.pgm output-images/slope_histgsoth-1.pgm 1 histgsoth 0 0 800 534
+sample-images/baboon.pgm output-images/baboon_histgsoth-1.pgm 1 histgsoth 0 0 512 512
+
+# Converts to HSI 
+sample-images/pen.ppm output-images/pen_histhsii-1.ppm 1 histhsii 30 30 200 200
+sample-images/pen.ppm output-images/pen_histhsihi-1.ppm 1 histhsihi 30 30 200 200 180 270
