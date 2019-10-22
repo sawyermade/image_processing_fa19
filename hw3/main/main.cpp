@@ -101,7 +101,59 @@ int main (int argc, char** argv)
 				rois_vec.push_back(roi_vec);
 
 			// hist equal opencv
-			if(!strncasecmp(pch.c_str(),"ocvotsu",MAXLEN)) {
+			if(!strncasecmp(pch.c_str(),"ocvotsuhist",MAXLEN)) {
+				// Local vars
+				Mat img_roi, img_roi_temp, img_temp, hist;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+				int pixel_val, bin_val;
+				vector<Mat> channels;
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and temp roi
+					img_roi = tgt_cv(cv_roi);
+					tgt_cv.copyTo(img_temp); 
+					img_roi_temp = img_temp(cv_roi);
+					
+					// Thresholds by OTSU into temp image
+					threshold(img_roi_temp, img_roi_temp, 0, 255, CV_THRESH_OTSU);
+
+					// Find all pixels in foreground
+					for(int i = start.second; i < start.second+size.second; i++){
+						for(int j = start.first; j < start.first+size.first; j++){
+							bin_val = img_roi_temp.at<unsigned char>(i, j);
+							if(bin_val == 255){
+								pixel_val = tgt_cv.at<unsigned char>(i, j);
+								hist.push_back(pixel_val);
+							}
+						}
+					}
+
+					// Runs historgam equal
+					hist.convertTo(hist, CV_8UC1);
+					split(hist, channels);
+					equalizeHist(channels[0], channels[0]);
+					merge(channels, hist);
+
+					// Adds pixels back to original img in roi
+					for(int i = start.second, count=0; i < start.second+size.second; i++){
+						for(int j = start.first; j < start.first+size.first; j++){
+							bin_val = img_roi_temp.at<unsigned char>(i, j);
+							if(bin_val == 255){
+								pixel_val = hist.at<unsigned char>(count);
+								count++;
+								img_roi.at<unsigned char>(i, j) = pixel_val;
+							}
+						}
+					}
+
+					// Sets flag so it wil save
+					cv_flag = true;
+				}
+			}
+
+			// hist equal opencv
+			else if(!strncasecmp(pch.c_str(),"ocvotsu",MAXLEN)) {
 				// Local vars
 				Mat edges, img_roi, img_roi_temp;
 				vector<Mat> channels;
