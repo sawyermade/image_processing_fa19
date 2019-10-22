@@ -208,31 +208,21 @@ int main (int argc, char** argv)
 					img_roi_temp = tgt_cv(cv_roi);
 
 					// Runs hist equal on roi
-					cvtColor(img_roi, img_roi_temp, COLOR_BGR2HSV);
-					split(img_roi_temp, channels);
-					equalizeHist(channels[2], channels[2]);
-					merge(channels, img_roi_temp);
-					cvtColor(img_roi_temp, img_roi, COLOR_HSV2BGR);
-					cv_flag = true;
-				}
-			}
+					// Color
+					if(tgt_cv.channels() > 1){
+						cvtColor(img_roi, img_roi_temp, COLOR_BGR2HSV);
+						split(img_roi_temp, channels);
+						equalizeHist(channels[2], channels[2]);
+						merge(channels, img_roi_temp);
+						cvtColor(img_roi_temp, img_roi, COLOR_HSV2BGR);
+					}
+					// Gray scale
+					else {
+						split(img_roi, channels);
+						equalizeHist(channels[0], channels[0]);
+						merge(channels, img_roi);
+					}
 
-			// hist equal opencv
-			else if(!strncasecmp(pch.c_str(),"ocvhistgs",MAXLEN)) {
-				// Local vars
-				Mat edges, img_roi;
-				vector<Mat> channels;
-				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
-
-				// Checks overlap
-				if(!ovlap){
-					// Creates roi and temp roi
-					img_roi = tgt_cv(cv_roi);
-
-					// Runs hist equal on roi
-					split(img_roi, channels);
-					equalizeHist(channels[0], channels[0]);
-					merge(channels, img_roi);
 					cv_flag = true;
 				}
 			}
@@ -242,6 +232,9 @@ int main (int argc, char** argv)
 				// Local vars
 				Mat edges, img_roi, img_roi_temp;
 				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+				int kernel_size;
+
+				fp >> kernel_size;
 
 				// Checks overlap
 				if(!ovlap){
@@ -255,11 +248,11 @@ int main (int argc, char** argv)
 					
 					// Gets edges
 					if(tgt_cv.channels() > 1){
-						Canny(img_roi_temp, edges, 100, 300);
+						Canny(img_roi_temp, edges, 100, 300, kernel_size);
 						cvtColor(edges, img_roi, CV_GRAY2BGR);
 					}
 					else{
-						Canny(img_roi, img_roi, 100, 300);
+						Canny(img_roi, img_roi, 100, 300, kernel_size);
 					}
 					cv_flag = true;
 				}
