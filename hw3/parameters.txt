@@ -29,3 +29,4 @@ sample-images/pen.ppm output-images/pen_ocvhist-1.ppm 1 ocvhist 0 0 490 286
 sample-images/slope.pgm output-images/slope_ocvhistgs-1.ppm 1 ocvhist 0 0 300 300
 sample-images/slope.pgm output-images/slope_ocvotsu-1.ppm 1 ocvotsu 0 0 800 534
 sample-images/slope.pgm output-images/slope_ocvotsuhist-1.pgm 1 ocvotsuhist 0 0 800 534
+sample-images/pen.ppm output-images/pen_ocvotsu-1.ppm 1 ocvotsu 0 0 490 286

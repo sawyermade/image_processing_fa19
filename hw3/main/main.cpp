@@ -189,7 +189,17 @@ int main (int argc, char** argv)
 				if(!ovlap){
 					// Creates roi
 					img_roi = tgt_cv(cv_roi);
-					threshold(img_roi, img_roi, 0, 255, CV_THRESH_OTSU);
+
+					if(tgt_cv.channels() > 1){
+						img_roi_temp = tgt_cv(cv_roi);
+						cvtColor(img_roi, img_roi_temp, CV_BGR2GRAY);
+						threshold(img_roi_temp, img_roi_temp, 0, 255, CV_THRESH_OTSU);
+						cvtColor(img_roi_temp, img_roi, CV_GRAY2BGR);
+					}
+					else{
+						threshold(img_roi, img_roi, 0, 255, CV_THRESH_OTSU);
+					}
+
 					cv_flag = true;
 				}
 			}
