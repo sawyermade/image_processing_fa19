@@ -23,4 +23,5 @@ sample-images/wheel.ppm output-images/wheel_sobel3_dir-2.ppm 1 sobel3dir 0 0 300
 sample-images/wheel.ppm output-images/wheel_ocvsobel-1.ppm 2 ocvsobel 0 0 150 150 ocvsobel 150 150 150 150
 sample-images/wheel.ppm output-images/wheel_ocvcanny-1.ppm 1 ocvsobel 150 0 150 300
 sample-images/pen.ppm output-images/pen_ocvhist-1.ppm 1 ocvhist 0 0 490 286
-sample-images/slope.pgm output-images/slope_ocvhistgs-1.ppm 1 ocvhistgs 150 0 150 300
+sample-images/slope.pgm output-images/slope_ocvhistgs-1.ppm 1 ocvhistgs 0 0 300 300
+sample-images/slope.pgm output-images/slope_ocvotsu-1.ppm 1 ocvotsu 0 0 800 534

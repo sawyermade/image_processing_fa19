@@ -101,7 +101,31 @@ int main (int argc, char** argv)
 				rois_vec.push_back(roi_vec);
 
 			// hist equal opencv
-			if(!strncasecmp(pch.c_str(),"ocvhist",MAXLEN)) {
+			if(!strncasecmp(pch.c_str(),"ocvotsu",MAXLEN)) {
+				// Local vars
+				Mat edges, img_roi, img_roi_temp;
+				vector<Mat> channels;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and temp roi
+					img_roi = tgt_cv(cv_roi);
+					// img_roi_temp = tgt_cv(cv_roi);
+
+					// Runs hist equal on roi
+					// cvtColor(img_roi, img_roi_temp, COLOR_BGR2HSV);
+					// split(img_roi_temp, channels);
+					// for(int i = 0; i < (int)channels.size(); i++)
+					// 	equalizeHist(channels[i], channels[i]);
+					threshold(img_roi, img_roi, 0, 255, CV_THRESH_OTSU);
+					// equalizeHist(img_roi, img_roi);
+					cv_flag = true;
+				}
+			}
+
+			// hist equal opencv
+			else if(!strncasecmp(pch.c_str(),"ocvhist",MAXLEN)) {
 				// Local vars
 				Mat edges, img_roi, img_roi_temp;
 				vector<Mat> channels;
