@@ -27,7 +27,42 @@ int utilities::checkValue(int value)
 //MY STUFF
 /*-----------------------------------------------------------------------*/
 
-void binarizegs(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh, int ws){
+void utilities::binarizegsdeg(image& src_grad, image& src_deg, image& tgt, pair<int, int> start, pair<int, int> size, int thresh_grad, int thresh_deg, int ws) {
+	// Local vars
+	int x1, y1, x2, y2, m, pixel_val_deg, pixel_val_grad, max_deg, min_deg;
+	x1 = start.first, x2 = x1 + size.first;
+	y1 = start.second, y2 = y1 + size.second;
+	m = (ws - 1) / 2;
+
+	// Find degree bounds
+	max_deg = thresh_deg + 10;
+	min_deg = thresh_deg - 10;
+	if(max_deg > 360)
+		max_deg -= 360;
+	if(min_deg < 0)
+		min_deg += 360;
+
+	// Goes through roi
+	for(int i = y1; i < y2; i++){
+		for(int j = x1; j < x2; j++){
+			// Checks for boarder, makes black
+			if(i < y1+m || i >= y2-m || j < x1+m || j >= x2-m){
+				tgt.setAll(i, j, BLACK);
+				continue;
+			}
+
+			// Thresholds by degree and gradient
+			pixel_val_deg = src_deg.getPixel(i, j);
+			pixel_val_grad = src_grad.getPixel(i, j);
+			if(pixel_val_deg <= max_deg && pixel_val_deg >= min_deg && pixel_val_grad >= thresh_grad)
+				tgt.setAll(i, j, WHITE);
+			else
+				tgt.setAll(i, j, BLACK);
+		}
+	}
+}
+
+void utilities::binarizegs(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh, int ws){
 	// Local vars
 	int x1, y1, x2, y2, m, pixel_val;
 	x1 = start.first, x2 = x1 + size.first;
@@ -35,8 +70,14 @@ void binarizegs(image& src, image& tgt, pair<int, int> start, pair<int, int> siz
 	m = (ws - 1) / 2;
 
 	// Goes through roi
-	for(int i = y1+m; i < y2-m; i++){
-		for(int j = x1+m; j < x2-m; j++){
+	for(int i = y1; i < y2; i++){
+		for(int j = x1; j < x2; j++){
+			// Checks for boarder, makes black
+			if(i < y1+m || i >= y2-m || j < x1+m || j >= x2-m){
+				tgt.setAll(i, j, BLACK);
+				continue;
+			}
+
 			pixel_val = src.getPixel(i, j);
 			if(pixel_val < thresh)
 				tgt.setAll(i, j, BLACK);
@@ -46,7 +87,7 @@ void binarizegs(image& src, image& tgt, pair<int, int> start, pair<int, int> siz
 	}
 }
 
-void binarizedeg(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh, int ws){
+void utilities::binarizedeg(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh, int ws){
 	// Local vars
 	int x1, y1, x2, y2, m, pixel_val, max_deg, min_deg;
 	x1 = start.first, x2 = x1 + size.first;
@@ -62,8 +103,14 @@ void binarizedeg(image& src, image& tgt, pair<int, int> start, pair<int, int> si
 		min_deg += 360;
 
 	// Goes through roi
-	for(int i = y1+m; i < y2-m; i++){
-		for(int j = x1+m; j < x2-m; j++){
+	for(int i = y1; i < y2; i++){
+		for(int j = x1; j < x2; j++){
+			// Checks for boarder, makes black
+			if(i < y1+m || i >= y2-m || j < x1+m || j >= x2-m){
+				tgt.setAll(i, j, BLACK);
+				continue;
+			}
+
 			pixel_val = src.getPixel(i, j);
 			if(pixel_val <= max_deg && pixel_val >= min_deg)
 				tgt.setAll(i, j, WHITE);
@@ -96,12 +143,18 @@ void utilities::gradient2d(image& src, image& tgt, image& tgtd, pair<int, int> s
 		max_mag = (int)max_mag + 1;
 
 	// Goes through all the pixels in the ROI and convolves them with kernel
-	for(int i = y1+m; i < y2-m; i++){
-		for(int j = x1+m; j < x2-m; j++){
+	for(int i = y1; i < y2; i++){
+		for(int j = x1; j < x2; j++){
+			// Checks for boarder, makes black
+			if(i < y1+m || i >= y2-m || j < x1+m || j >= x2-m){
+				tgt.setAll(i, j, BLACK);
+				continue;
+			}
+
 			// Goes through window and kernel
-			sumx = 0, sumy = 0;
-			for(int k = i-m; k < i+m; k++){
-				for(int l = j-m; l < j+m; j++){
+			sumx = 0, sumy = 0;		
+			for(int k = i-m; k < i+m+1; k++){
+				for(int l = j-m; l < j+m+1; l++){
 					// Get pixel value grayscale and color
 					pixel_val = 
 						src.getPixel(k, l, RED) + 
@@ -118,12 +171,15 @@ void utilities::gradient2d(image& src, image& tgt, image& tgtd, pair<int, int> s
 			magnitude = sqrt((sumx*sumx) + (sumy*sumy));
 			pixel_new = (int)(magnitude / max_mag * 255);
 			tgt.setAll(i, j, checkValue(pixel_new));
+			// cout << "magnitude = " << pixel_new << ", old = " << src.getPixel(i, j) << endl;
 
 			// Calc direction with range 0 to 360 and makes direction image tgtd
 			direction = atan2(sumy, sumx) * 180 / M_PI;
+			// cout << "direction = " << direction << endl;
 			if(direction < 0)
 				direction += 360;
 			tgtd.setAll(i, j, (int)direction);
+			// cout << "direction = " << direction << endl << endl;
 		}
 	}
 }

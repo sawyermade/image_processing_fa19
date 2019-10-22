@@ -47,6 +47,7 @@ class utilities
 		static void gradient2d(image& src, image& tgt, image& tgtd, pair<int, int> start, pair<int, int> size, vector<vector<int> > kernelx, vector<vector<int> > kernely);
 		static void binarizegs(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh, int ws);
 		static void binarizedeg(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh, int ws);
+		static void binarizegsdeg(image& src_grad, image& src_deg, image& tgt, pair<int, int> start, pair<int, int> size, int thresh_grad, int thresh_deg, int ws);
 };
 
 #endif

@@ -6,8 +6,12 @@
 //MY INCLUDES
 #include <fstream>
 #include "hsi.h"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
+// #include "opencv2/core/core.hpp"
 
 using namespace std;
+using namespace cv;
 
 #define MAXLEN 256
 #define MAXROI 1024
@@ -20,6 +24,9 @@ int main (int argc, char** argv)
 	ifstream fp;
 	int count;
 	bool ovlap;
+
+	// OpenCV
+	Mat tgt_cv;
 
 	//attempts to open parameters file.
 	fp.open(argv[1],fstream::in);
@@ -70,7 +77,9 @@ int main (int argc, char** argv)
 		//copies source to target and sets filename.
 		tgt = src;
 		tgt = outfile;
-		
+		tgt_cv = imread(infile, -1);
+		bool cv_flag = false;
+
 		if(fp.eof()) break;
 		rois_vec.clear();
 		for(int i = 0; i < count; ++i) {
@@ -91,8 +100,224 @@ int main (int argc, char** argv)
 			if(!ovlap)
 				rois_vec.push_back(roi_vec);
 
+			// hist equal opencv
+			if(!strncasecmp(pch.c_str(),"ocvhist",MAXLEN)) {
+				// Local vars
+				Mat edges, img_roi, img_roi_temp;
+				vector<Mat> channels;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and temp roi
+					img_roi = tgt_cv(cv_roi);
+					img_roi_temp = tgt_cv(cv_roi);
+
+					// Runs hist equal on roi
+					cvtColor(img_roi, img_roi_temp, COLOR_BGR2HSV);
+					split(img_roi_temp, channels);
+					// for(int i = 0; i < (int)channels.size(); i++)
+					// 	equalizeHist(channels[i], channels[i]);
+					equalizeHist(channels[2], channels[2]);
+					merge(channels, img_roi_temp);
+					cvtColor(img_roi_temp, img_roi, COLOR_HSV2BGR);
+					cv_flag = true;
+				}
+			}
+
+			// hist equal opencv
+			else if(!strncasecmp(pch.c_str(),"ocvhistgs",MAXLEN)) {
+				// Local vars
+				Mat edges, img_roi;
+				vector<Mat> channels;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and temp roi
+					img_roi = tgt_cv(cv_roi);
+
+					// Runs hist equal on roi
+					split(img_roi, channels);
+					// cout << channels.size() << endl;
+					equalizeHist(channels[0], channels[0]);
+					merge(channels, img_roi);
+					cv_flag = true;
+				}
+			}
+
+			// canny 3x3 gradient thresh
+			else if(!strncasecmp(pch.c_str(),"ocvcanny",MAXLEN)) {
+				// Local vars
+				Mat edges, img_roi, img_roi_temp;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and temp roi
+					img_roi = tgt_cv(cv_roi);
+					img_roi_temp = tgt_cv(cv_roi);
+
+					// Converts roi to grayscale
+					cvtColor(img_roi_temp, img_roi_temp, CV_BGR2GRAY);
+					cvtColor(img_roi_temp, img_roi, CV_GRAY2BGR);
+					
+					// Gets edges
+					Canny(img_roi, edges, 50, 150);
+					convertScaleAbs(edges, img_roi);
+					cv_flag = true;
+				}
+			}
+
+			// Sobel 3x3 gradient thresh OpenCV
+			else if(!strncasecmp(pch.c_str(),"ocvsobel",MAXLEN)) {
+				// Local vars
+				Mat gx, gy, img_roi, img_roi_temp;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and temp roi
+					img_roi = tgt_cv(cv_roi);
+					img_roi_temp = tgt_cv(cv_roi);
+
+					// Converts roi to grayscale
+					cvtColor(img_roi_temp, img_roi_temp, CV_BGR2GRAY);
+					cvtColor(img_roi_temp, img_roi, CV_GRAY2BGR);
+					
+					// Gets dx, dy gradients
+					Sobel(img_roi, gx, CV_32F, 1, 0);
+					Sobel(img_roi, gy, CV_32F, 0, 1);
+					convertScaleAbs(gx, gx);
+					convertScaleAbs(gy, gy);
+
+					// Combines dc and dy
+					addWeighted(gx, 0.5, gy, 0.5, 0, img_roi);
+					cv_flag = true;
+				}
+			}
+
+			// Sobel 3x3 gradient thresh
+			else if(!strncasecmp(pch.c_str(),"sobel3gs",MAXLEN)) {
+				
+				int thresh_grad, ws = 3;
+				fp >> thresh_grad;
+
+				image tgtd = src, tgtg = src;
+				vector<vector<int> > kernelx = {
+					{-1, 0, 1},
+					{-2, 0, 2},
+					{-1, 0, 1}
+				};
+				vector<vector<int> > kernely = {
+					{-1, -2, -1},
+					{ 0,  0,  0},
+					{ 1,  2,  1}
+				};
+				
+				// If roi overlap is false
+				if(!ovlap){
+					utilities::gradient2d(src, tgtg, tgtd, start, size, kernelx, kernely);
+					utilities::binarizegs(tgtg, tgt, start, size, thresh_grad, ws);
+				}
+			}
+
+			// Sobel 3x3 gradient/direction thresh
+			else if(!strncasecmp(pch.c_str(),"sobel3dir",MAXLEN)) {
+				
+				int thresh_deg, ws = 3;
+				fp >> thresh_deg;
+
+				image tgtd = src, tgtg = src;
+				vector<vector<int> > kernelx = {
+					{-1, 0, 1},
+					{-2, 0, 2},
+					{-1, 0, 1}
+				};
+				vector<vector<int> > kernely = {
+					{-1, -2, -1},
+					{ 0,  0,  0},
+					{ 1,  2,  1}
+				};
+				
+				// If roi overlap is false
+				if(!ovlap){
+					utilities::gradient2d(src, tgtg, tgtd, start, size, kernelx, kernely);
+					utilities::binarizedeg(tgtd, tgt, start, size, thresh_deg, ws);
+				}
+			}
+
+			// Sobel 3x3 direction thresh
+			else if(!strncasecmp(pch.c_str(),"sobel3gsdir",MAXLEN)) {
+				
+				int thresh_grad, thresh_deg, ws = 3;
+				fp >> thresh_grad >> thresh_deg;
+
+				image tgtd = src, tgtg = src;
+				vector<vector<int> > kernelx = {
+					{-1, 0, 1},
+					{-2, 0, 2},
+					{-1, 0, 1}
+				};
+				vector<vector<int> > kernely = {
+					{-1, -2, -1},
+					{ 0,  0,  0},
+					{ 1,  2,  1}
+				};
+				
+				// If roi overlap is false
+				if(!ovlap){
+					utilities::gradient2d(src, tgtg, tgtd, start, size, kernelx, kernely);
+					utilities::binarizegsdeg(tgtg, tgtd, tgt, start, size, thresh_grad, thresh_deg, ws);
+				}
+			}
+
+			// Sobel 3x3
+			else if(!strncasecmp(pch.c_str(),"sobel5",MAXLEN)) {
+				
+				image tgtd = src;
+				vector<vector<int> > kernelx = {
+					{ -5,  -4, 0,  4,  5},
+					{ -8, -10, 0, 10,  8},
+					{-10, -20, 0, 20, 10},
+					{ -8, -10, 0, 10,  8},
+					{ -5,  -4, 0,  4,  5}
+				};
+				vector<vector<int> > kernely = {
+					{-5,  -8, -10,  -8, -5},
+					{-4, -10, -20, -10, -4},
+					{ 0,   0,   0,   0,  0},
+					{ 4,  10,  20,  10,  4},
+					{ 5,   8,  10,   8,  5}
+				};
+				
+				// If roi overlap is false
+				if(!ovlap)
+					utilities::gradient2d(src, tgt, tgtd, start, size, kernelx, kernely);
+			}
+
+			// Sobel 3x3
+			else if(!strncasecmp(pch.c_str(),"sobel3",MAXLEN)) {
+				
+				image tgtd = src;
+				vector<vector<int> > kernelx = {
+					{-1, 0, 1},
+					{-2, 0, 2},
+					{-1, 0, 1}
+				};
+				vector<vector<int> > kernely = {
+					{-1, -2, -1},
+					{ 0,  0,  0},
+					{ 1,  2,  1}
+				};
+				
+				// If roi overlap is false
+				if(!ovlap)
+					utilities::gradient2d(src, tgt, tgtd, start, size, kernelx, kernely);
+			}
+
 			//grayscale binarization/threshold process.
-			if(!strncasecmp(pch.c_str(),"bin",MAXLEN)) {
+			else if(!strncasecmp(pch.c_str(),"bin",MAXLEN)) {
 				
 				int thresh1, thresh2;
 				fp >> thresh1 >> thresh2;
@@ -540,7 +765,11 @@ int main (int argc, char** argv)
 		}
 
 		// Saves target
-		tgt.save();
+		if(cv_flag)
+			imwrite(outfile, tgt_cv);
+		
+		else
+			tgt.save();
 		getline(fp,strtemp);
 
 	}

@@ -1,7 +1,7 @@
 CC=g++
-CFLAGS=-g -Wall -std=c++11
+CFLAGS=-g -Wall -std=c++11 
 INC=-Iimage/ -Iutilities/ -Ihsi/
-LIB=
+LIB=`pkg-config --libs opencv`
 BIN=
 SRC=image/image.cpp utilities/utilities.cpp main/main.cpp hsi/hsi.cpp
 OBJ=$(SRC:.cpp=.o)

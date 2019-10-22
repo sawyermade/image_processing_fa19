@@ -1,23 +1,26 @@
-# Optimal thresh binarization
-sample-images/baboon.pgm output-images/baboon_othgs-1.pgm 2 othgs 256 256 256 256 othgs 0 0 256 256
-sample-images/slope.pgm output-images/slope_othgs-1.pgm 1 othgs 30 30 740 470
+# Sobel 3
+sample-images/wheel.pgm output-images/wheel_sobel3-1.pgm 1 sobel3 0 0 300 300
+sample-images/wheel.ppm output-images/wheel_sobel3-2.ppm 1 sobel3 0 0 300 300
 
-# Optimal thresh background and foreground
-sample-images/slope.pgm output-images/slope_othbr-1.pgm 1 othbr 30 30 740 470
-sample-images/slope.pgm output-images/slope_othfg-1.pgm 1 othfg 30 30 740 470
+# Sobel 5
+sample-images/wheel.pgm output-images/wheel_sobel5-1.pgm 1 sobel5 0 0 300 300
+sample-images/wheel.ppm output-images/wheel_sobel5-2.ppm 1 sobel5 0 0 300 300
 
-# Historgram stretching grayscale linear
-sample-images/slope.pgm output-images/slope_histgs-1.pgm 1 histgs 0 0 800 534 100 200
-sample-images/slope.pgm output-images/slope_histgs-2.pgm 1 histgs 0 0 800 534 100 150
+# Sobel 3 Direction/Gradient Thresh
+sample-images/wheel.pgm output-images/wheel_sobel3_gsdir-1.pgm 1 sobel3gsdir 0 0 300 300 20 45
+sample-images/wheel.ppm output-images/wheel_sobel3_gsdir-2.ppm 1 sobel3gsdir 0 0 300 300 5 135
 
-# Historgram stretching grayscale bilinear
-sample-images/slope.pgm output-images/slope_histgsbl-1.pgm 1 histgsbl 0 0 800 534 100 150 50 200
-sample-images/slope.pgm output-images/slope_histgsbl-2.pgm 1 histgsbl 0 0 800 534 100 200 50 240
+# Sobel 3 Gradient Thresh
+sample-images/wheel.pgm output-images/wheel_sobel3_gs-1.pgm 1 sobel3gs 0 0 300 300 20
+sample-images/wheel.ppm output-images/wheel_sobel3_gs-2.ppm 1 sobel3gs 0 0 300 300 5
 
-# Optimal thresh grayscale background/foreground and combined
-sample-images/slope.pgm output-images/slope_histgsoth-1.pgm 1 histgsoth 0 0 800 534
-sample-images/baboon.pgm output-images/baboon_histgsoth-1.pgm 1 histgsoth 0 0 512 512
+# Sobel 3 Direction Thresh
+sample-images/wheel.pgm output-images/wheel_sobel3_dir-1.pgm 1 sobel3dir 0 0 300 300 45
+sample-images/wheel.ppm output-images/wheel_sobel3_dir-1.ppm 1 sobel3dir 0 0 300 300 45
+sample-images/wheel.ppm output-images/wheel_sobel3_dir-2.ppm 1 sobel3dir 0 0 300 300 135
 
-# Converts to HSI 
-sample-images/pen.ppm output-images/pen_histhsii-1.ppm 1 histhsii 30 30 200 200
-sample-images/pen.ppm output-images/pen_histhsihi-1.ppm 1 histhsihi 30 30 200 200 180 270
+# Opencv shit
+sample-images/wheel.ppm output-images/wheel_ocvsobel-1.ppm 2 ocvsobel 0 0 150 150 ocvsobel 150 150 150 150
+sample-images/wheel.ppm output-images/wheel_ocvcanny-1.ppm 1 ocvsobel 150 0 150 300
+sample-images/pen.ppm output-images/pen_ocvhist-1.ppm 1 ocvhist 0 0 490 286
+sample-images/slope.pgm output-images/slope_ocvhistgs-1.ppm 1 ocvhistgs 150 0 150 300
