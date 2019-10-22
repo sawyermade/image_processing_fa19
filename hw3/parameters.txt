@@ -1,23 +1,23 @@
 # Sobel 3
-sample-images/wheel.pgm output-images/wheel_sobel3-1.pgm 1 sobel3 0 0 300 300
-sample-images/wheel.ppm output-images/wheel_sobel3-2.ppm 1 sobel3 0 0 300 300
+sample-images/wheel.pgm output-images/wheel_sobel3-1.pgm 1 sobel 0 0 300 300 3
+sample-images/wheel.ppm output-images/wheel_sobel3-2.ppm 1 sobel 0 0 300 300 3
 
 # Sobel 5
-sample-images/wheel.pgm output-images/wheel_sobel5-1.pgm 1 sobel5 0 0 300 300
-sample-images/wheel.ppm output-images/wheel_sobel5-2.ppm 1 sobel5 0 0 300 300
+sample-images/wheel.pgm output-images/wheel_sobel5-1.pgm 1 sobel 0 0 300 300 5
+sample-images/wheel.ppm output-images/wheel_sobel5-2.ppm 1 sobel 0 0 300 300 5
 
 # Sobel 3 Direction/Gradient Thresh
-sample-images/wheel.pgm output-images/wheel_sobel3_gsdir-1.pgm 1 sobel3gsdir 0 0 300 300 20 45
-sample-images/wheel.ppm output-images/wheel_sobel3_gsdir-2.ppm 1 sobel3gsdir 0 0 300 300 5 135
+sample-images/wheel.pgm output-images/wheel_sobel3_gsdir-1.pgm 1 sobelgsdir 0 0 300 300 3 20 45
+sample-images/wheel.ppm output-images/wheel_sobel3_gsdir-2.ppm 1 sobelgsdir 0 0 300 300 3 5 135
 
 # Sobel 3 Gradient Thresh
-sample-images/wheel.pgm output-images/wheel_sobel3_gs-1.pgm 1 sobel3gs 0 0 300 300 20
-sample-images/wheel.ppm output-images/wheel_sobel3_gs-2.ppm 1 sobel3gs 0 0 300 300 5
+sample-images/wheel.pgm output-images/wheel_sobel3_gs-1.pgm 1 sobelgs 0 0 300 300 3 20
+sample-images/wheel.ppm output-images/wheel_sobel3_gs-2.ppm 1 sobelgs 0 0 300 300 3 5
 
 # Sobel 3 Direction Thresh
-sample-images/wheel.pgm output-images/wheel_sobel3_dir-1.pgm 1 sobel3dir 0 0 300 300 45
-sample-images/wheel.ppm output-images/wheel_sobel3_dir-1.ppm 1 sobel3dir 0 0 300 300 45
-sample-images/wheel.ppm output-images/wheel_sobel3_dir-2.ppm 1 sobel3dir 0 0 300 300 135
+sample-images/wheel.pgm output-images/wheel_sobel3_dir-1.pgm 1 sobeldir 0 0 300 300 3 45
+sample-images/wheel.ppm output-images/wheel_sobel3_dir-1.ppm 1 sobeldir 0 0 300 300 3 45
+sample-images/wheel.ppm output-images/wheel_sobel3_dir-2.ppm 1 sobeldir 0 0 300 300 3 135
 
 # Opencv shit
 sample-images/wheel.ppm output-images/wheel_ocvsobel-1.pgm 2 ocvsobel 0 0 150 150 ocvsobel 150 150 150 150

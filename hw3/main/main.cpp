@@ -80,6 +80,32 @@ int main (int argc, char** argv)
 		tgt_cv = imread(infile, -1);
 		bool cv_flag = false;
 
+		// Kernels
+		vector<vector<int> > sobel3x = {
+			{-1, 0, 1},
+			{-2, 0, 2},
+			{-1, 0, 1}
+		};
+		vector<vector<int> > sobel3y = {
+			{-1, -2, -1},
+			{ 0,  0,  0},
+			{ 1,  2,  1}
+		};
+		vector<vector<int> > sobel5x = {
+			{ -5,  -4, 0,  4,  5},
+			{ -8, -10, 0, 10,  8},
+			{-10, -20, 0, 20, 10},
+			{ -8, -10, 0, 10,  8},
+			{ -5,  -4, 0,  4,  5}
+		};
+		vector<vector<int> > sobel5y = {
+			{-5,  -8, -10,  -8, -5},
+			{-4, -10, -20, -10, -4},
+			{ 0,   0,   0,   0,  0},
+			{ 4,  10,  20,  10,  4},
+			{ 5,   8,  10,   8,  5}
+		};
+
 		if(fp.eof()) break;
 		rois_vec.clear();
 		for(int i = 0; i < count; ++i) {
@@ -161,17 +187,9 @@ int main (int argc, char** argv)
 
 				// Checks overlap
 				if(!ovlap){
-					// Creates roi and temp roi
+					// Creates roi
 					img_roi = tgt_cv(cv_roi);
-					// img_roi_temp = tgt_cv(cv_roi);
-
-					// Runs hist equal on roi
-					// cvtColor(img_roi, img_roi_temp, COLOR_BGR2HSV);
-					// split(img_roi_temp, channels);
-					// for(int i = 0; i < (int)channels.size(); i++)
-					// 	equalizeHist(channels[i], channels[i]);
 					threshold(img_roi, img_roi, 0, 255, CV_THRESH_OTSU);
-					// equalizeHist(img_roi, img_roi);
 					cv_flag = true;
 				}
 			}
@@ -192,8 +210,6 @@ int main (int argc, char** argv)
 					// Runs hist equal on roi
 					cvtColor(img_roi, img_roi_temp, COLOR_BGR2HSV);
 					split(img_roi_temp, channels);
-					// for(int i = 0; i < (int)channels.size(); i++)
-					// 	equalizeHist(channels[i], channels[i]);
 					equalizeHist(channels[2], channels[2]);
 					merge(channels, img_roi_temp);
 					cvtColor(img_roi_temp, img_roi, COLOR_HSV2BGR);
@@ -215,7 +231,6 @@ int main (int argc, char** argv)
 
 					// Runs hist equal on roi
 					split(img_roi, channels);
-					// cout << channels.size() << endl;
 					equalizeHist(channels[0], channels[0]);
 					merge(channels, img_roi);
 					cv_flag = true;
@@ -274,22 +289,22 @@ int main (int argc, char** argv)
 			}
 
 			// Sobel 3x3 gradient thresh
-			else if(!strncasecmp(pch.c_str(),"sobel3gs",MAXLEN)) {
+			else if(!strncasecmp(pch.c_str(),"sobelgs",MAXLEN)) {
 				
-				int thresh_grad, ws = 3;
-				fp >> thresh_grad;
-
 				image tgtd = src, tgtg = src;
-				vector<vector<int> > kernelx = {
-					{-1, 0, 1},
-					{-2, 0, 2},
-					{-1, 0, 1}
-				};
-				vector<vector<int> > kernely = {
-					{-1, -2, -1},
-					{ 0,  0,  0},
-					{ 1,  2,  1}
-				};
+				vector<vector<int> > kernelx, kernely;
+				int thresh_grad, ws = 3, kernel_size;
+				fp >> kernel_size >> thresh_grad;
+
+				if(kernel_size == 3){
+					kernelx = sobel3x;
+					kernely = sobel3y;
+				}
+				else{
+					kernelx = sobel5x;
+					kernely = sobel5y;
+				}
+
 				
 				// If roi overlap is false
 				if(!ovlap){
@@ -298,23 +313,22 @@ int main (int argc, char** argv)
 				}
 			}
 
-			// Sobel 3x3 gradient/direction thresh
-			else if(!strncasecmp(pch.c_str(),"sobel3dir",MAXLEN)) {
+			// Sobel 3x3 direction thresh
+			else if(!strncasecmp(pch.c_str(),"sobeldir",MAXLEN)) {
 				
-				int thresh_deg, ws = 3;
-				fp >> thresh_deg;
-
 				image tgtd = src, tgtg = src;
-				vector<vector<int> > kernelx = {
-					{-1, 0, 1},
-					{-2, 0, 2},
-					{-1, 0, 1}
-				};
-				vector<vector<int> > kernely = {
-					{-1, -2, -1},
-					{ 0,  0,  0},
-					{ 1,  2,  1}
-				};
+				vector<vector<int> > kernelx, kernely;
+				int thresh_deg, ws = 3, kernel_size;
+				fp >> kernel_size >> thresh_deg;
+
+				if(kernel_size == 3){
+					kernelx = sobel3x;
+					kernely = sobel3y;
+				}
+				else{
+					kernelx = sobel5x;
+					kernely = sobel5y;
+				}
 				
 				// If roi overlap is false
 				if(!ovlap){
@@ -323,23 +337,22 @@ int main (int argc, char** argv)
 				}
 			}
 
-			// Sobel 3x3 direction thresh
-			else if(!strncasecmp(pch.c_str(),"sobel3gsdir",MAXLEN)) {
+			// Sobel 3x3 gradient direction thresh
+			else if(!strncasecmp(pch.c_str(),"sobelgsdir",MAXLEN)) {
 				
-				int thresh_grad, thresh_deg, ws = 3;
-				fp >> thresh_grad >> thresh_deg;
-
 				image tgtd = src, tgtg = src;
-				vector<vector<int> > kernelx = {
-					{-1, 0, 1},
-					{-2, 0, 2},
-					{-1, 0, 1}
-				};
-				vector<vector<int> > kernely = {
-					{-1, -2, -1},
-					{ 0,  0,  0},
-					{ 1,  2,  1}
-				};
+				vector<vector<int> > kernelx, kernely;
+				int thresh_deg, thresh_grad, ws = 3, kernel_size;
+				fp >> kernel_size >> thresh_grad >> thresh_deg;
+
+				if(kernel_size == 3){
+					kernelx = sobel3x;
+					kernely = sobel3y;
+				}
+				else{
+					kernelx = sobel5x;
+					kernely = sobel5y;
+				}
 				
 				// If roi overlap is false
 				if(!ovlap){
@@ -348,48 +361,26 @@ int main (int argc, char** argv)
 				}
 			}
 
-			// Sobel 3x3
-			else if(!strncasecmp(pch.c_str(),"sobel5",MAXLEN)) {
+			// Sobel
+			else if(!strncasecmp(pch.c_str(),"sobel",MAXLEN)) {
 				
-				image tgtd = src;
-				vector<vector<int> > kernelx = {
-					{ -5,  -4, 0,  4,  5},
-					{ -8, -10, 0, 10,  8},
-					{-10, -20, 0, 20, 10},
-					{ -8, -10, 0, 10,  8},
-					{ -5,  -4, 0,  4,  5}
-				};
-				vector<vector<int> > kernely = {
-					{-5,  -8, -10,  -8, -5},
-					{-4, -10, -20, -10, -4},
-					{ 0,   0,   0,   0,  0},
-					{ 4,  10,  20,  10,  4},
-					{ 5,   8,  10,   8,  5}
-				};
-				
-				// If roi overlap is false
-				if(!ovlap)
-					utilities::gradient2d(src, tgt, tgtd, start, size, kernelx, kernely);
-			}
+				image tgtg = src;
+				vector<vector<int> > kernelx, kernely;
+				int kernel_size;
+				fp >> kernel_size;
 
-			// Sobel 3x3
-			else if(!strncasecmp(pch.c_str(),"sobel3",MAXLEN)) {
-				
-				image tgtd = src;
-				vector<vector<int> > kernelx = {
-					{-1, 0, 1},
-					{-2, 0, 2},
-					{-1, 0, 1}
-				};
-				vector<vector<int> > kernely = {
-					{-1, -2, -1},
-					{ 0,  0,  0},
-					{ 1,  2,  1}
-				};
+				if(kernel_size == 3){
+					kernelx = sobel3x;
+					kernely = sobel3y;
+				}
+				else{
+					kernelx = sobel5x;
+					kernely = sobel5y;
+				}
 				
 				// If roi overlap is false
 				if(!ovlap)
-					utilities::gradient2d(src, tgt, tgtd, start, size, kernelx, kernely);
+					utilities::gradient2d(src, tgt, tgtg, start, size, kernelx, kernely);
 			}
 
 			//grayscale binarization/threshold process.
