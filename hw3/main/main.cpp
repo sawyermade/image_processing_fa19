@@ -250,12 +250,17 @@ int main (int argc, char** argv)
 					img_roi_temp = tgt_cv(cv_roi);
 
 					// Converts roi to grayscale
-					cvtColor(img_roi_temp, img_roi_temp, CV_BGR2GRAY);
-					cvtColor(img_roi_temp, img_roi, CV_GRAY2BGR);
+					if(tgt_cv.channels() > 1)
+						cvtColor(img_roi_temp, img_roi_temp, CV_BGR2GRAY);
 					
 					// Gets edges
-					Canny(img_roi, edges, 50, 150);
-					convertScaleAbs(edges, img_roi);
+					if(tgt_cv.channels() > 1){
+						Canny(img_roi_temp, edges, 100, 300);
+						cvtColor(edges, img_roi, CV_GRAY2BGR);
+					}
+					else{
+						Canny(img_roi, img_roi, 100, 300);
+					}
 					cv_flag = true;
 				}
 			}
@@ -265,6 +270,9 @@ int main (int argc, char** argv)
 				// Local vars
 				Mat gx, gy, img_roi, img_roi_temp;
 				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+				int kernel_size;
+
+				fp >> kernel_size;
 
 				// Checks overlap
 				if(!ovlap){
@@ -277,8 +285,8 @@ int main (int argc, char** argv)
 					cvtColor(img_roi_temp, img_roi, CV_GRAY2BGR);
 					
 					// Gets dx, dy gradients
-					Sobel(img_roi, gx, CV_32F, 1, 0);
-					Sobel(img_roi, gy, CV_32F, 0, 1);
+					Sobel(img_roi, gx, CV_32F, 1, 0, kernel_size);
+					Sobel(img_roi, gy, CV_32F, 0, 1, kernel_size);
 					convertScaleAbs(gx, gx);
 					convertScaleAbs(gy, gy);
 
