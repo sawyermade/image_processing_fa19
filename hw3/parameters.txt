@@ -7,17 +7,17 @@ sample-images/wheel.pgm output-images/wheel_sobel5-1.pgm 1 sobel 0 0 300 300 5
 sample-images/wheel.ppm output-images/wheel_sobel5-2.ppm 1 sobel 0 0 300 300 5
 
 # Sobel 3 Direction/Gradient Thresh
-sample-images/wheel.pgm output-images/wheel_sobel3_gsdir-1.pgm 1 sobelgsdir 0 0 300 300 3 20 45
-sample-images/wheel.ppm output-images/wheel_sobel3_gsdir-2.ppm 1 sobelgsdir 0 0 300 300 3 5 135
+sample-images/wheel.pgm output-images/wheel_sobel3_gbdb-1.pgm 1 sobelgbdb 0 0 300 300 3 20 45
+sample-images/wheel.ppm output-images/wheel_sobel3_gbdb-2.ppm 1 sobelgbdb 0 0 300 300 3 5 135
 
 # Sobel 3 Gradient Thresh
-sample-images/wheel.pgm output-images/wheel_sobel3_gs-1.pgm 1 sobelgs 0 0 300 300 3 20
-sample-images/wheel.ppm output-images/wheel_sobel3_gs-2.ppm 1 sobelgs 0 0 300 300 3 5
+sample-images/wheel.pgm output-images/wheel_sobel3_gb-1.pgm 1 sobelgb 0 0 300 300 3 20
+sample-images/wheel.ppm output-images/wheel_sobel3_gb-2.ppm 1 sobelgb 0 0 300 300 3 5
 
 # Sobel 3 Direction Thresh
-sample-images/wheel.pgm output-images/wheel_sobel3_dir-1.pgm 1 sobeldir 0 0 300 300 3 45
-sample-images/wheel.ppm output-images/wheel_sobel3_dir-1.ppm 1 sobeldir 0 0 300 300 3 45
-sample-images/wheel.ppm output-images/wheel_sobel3_dir-2.ppm 1 sobeldir 0 0 300 300 3 135
+sample-images/wheel.pgm output-images/wheel_sobel3_db-1.pgm 1 sobeldb 0 0 300 300 3 45
+sample-images/wheel.ppm output-images/wheel_sobel3_db-1.ppm 1 sobeldb 0 0 300 300 3 45
+sample-images/wheel.ppm output-images/wheel_sobel3_db-2.ppm 1 sobeldb 0 0 300 300 3 135
 
 # Opencv stuff
 sample-images/wheel.ppm output-images/wheel_ocvsobel3-1.pgm 2 ocvsobel 0 0 150 150 3 ocvsobel 150 150 150 150 3

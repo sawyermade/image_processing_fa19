@@ -8,7 +8,6 @@
 #include "hsi.h"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
-// #include "opencv2/core/core.hpp"
 
 using namespace std;
 using namespace cv;
@@ -181,7 +180,7 @@ int main (int argc, char** argv)
 			// hist equal opencv
 			else if(!strncasecmp(pch.c_str(),"ocvotsu",MAXLEN)) {
 				// Local vars
-				Mat edges, img_roi, img_roi_temp;
+				Mat img_roi, img_roi_temp;
 				vector<Mat> channels;
 				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
 
@@ -300,7 +299,7 @@ int main (int argc, char** argv)
 			}
 
 			// Sobel 3x3 gradient thresh
-			else if(!strncasecmp(pch.c_str(),"sobelgs",MAXLEN)) {
+			else if(!strncasecmp(pch.c_str(),"sobelgb",MAXLEN)) {
 				
 				image tgtd = src, tgtg = src;
 				vector<vector<int> > kernelx, kernely;
@@ -325,7 +324,7 @@ int main (int argc, char** argv)
 			}
 
 			// Sobel 3x3 direction thresh
-			else if(!strncasecmp(pch.c_str(),"sobeldir",MAXLEN)) {
+			else if(!strncasecmp(pch.c_str(),"sobeldb",MAXLEN)) {
 				
 				image tgtd = src, tgtg = src;
 				vector<vector<int> > kernelx, kernely;
@@ -349,7 +348,7 @@ int main (int argc, char** argv)
 			}
 
 			// Sobel 3x3 gradient direction thresh
-			else if(!strncasecmp(pch.c_str(),"sobelgsdir",MAXLEN)) {
+			else if(!strncasecmp(pch.c_str(),"sobelgbdb",MAXLEN)) {
 				
 				image tgtd = src, tgtg = src;
 				vector<vector<int> > kernelx, kernely;
@@ -845,7 +844,6 @@ int main (int argc, char** argv)
 		// Saves target
 		if(cv_flag)
 			imwrite(outfile, tgt_cv);
-		
 		else
 			tgt.save();
 		getline(fp,strtemp);
