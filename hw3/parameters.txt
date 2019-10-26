@@ -1,6 +1,7 @@
 # Sobel 3
 sample-images/wheel.pgm output-images/wheel_sobel3-1.pgm 1 sobel 0 0 300 300 3
 sample-images/wheel.ppm output-images/wheel_sobel3-2.ppm 1 sobel 0 0 300 300 3
+sample-images/baboon.pgm output-images/baboon_sobel3-1.pgm 1 sobel 0 0 512 512 3
 
 # Sobel 5
 sample-images/wheel.pgm output-images/wheel_sobel5-1.pgm 1 sobel 0 0 300 300 5
