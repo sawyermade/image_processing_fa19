@@ -1,37 +1,39 @@
 # Image Processing Grad USF Fall 2019 HW3
 ## Processes:
-histgs = grayscale linear histogram stretching
+sobel = runs sobel filter over ROI
 
-histgsbl = grayscale bilinear historgram stretching
+sobelgb = sobel with amplitude/gradient binarization
 
-othgs = optimal thresholding binarization, black = background, white = foreground
+sobelgbdb = sobel with amplitude/gradient binarization and degree/direction binarization
 
-othbr = creates background image based off optimal threshold
+OPENCV Processes. Cannot run opencv and non-opencv processes on the same image
 
-othfg = creates forground image based off optimal threshold
+ocvsobel = OpenCV sobel implementation
 
-histgsoth = stretches both back/fore ground images, saves them, and before/after histograms, and combines
+ocvcanny = OpenCV canny
 
-histhsii = HSI histogram stretching on I
+ocvhist = OpenCV histogram equalization
 
-histhsihi = HSI histogram stretching on I and H
+ocvotsu = OpenCV OTSU
 
-## Parameters for Processes: WS is odd number that will be squared
-histgs X Y Sx Sy a b
+ocvotsuhist = OpenCV OTSU with foreground histogram equalized
 
-histgsbl X Y Sx Sy a b c d
+## Parameters for Processes: WS is odd number that will be squared for total size
+sobel X Y Sx Sy WS
 
-othgs X Y Sx Sy
+sobel X Y Sx Sy WS Ta
 
-othbr X Y Sx Sy 
+sobelgbdb X Y Sx Sy WS Ta Td
 
-othfg X Y Sx Sy 
+ocvsobel X Y Sx Sy WS
 
-histgsoth X Y Sx Sy 
+ocvcanny X Y Sx Sy WS
 
-histhsii X Y Sx Sy 
+ocvhist X Y Sx Sy 
 
-histhsihi X Y Sx Sy Hmin Hmax
+ocvotsu X Y Sx Sy 
+
+ocvotsuhist X Y Sx Sy
 
 ## Input File Format:
 input/file output/file #Processes ProcessName Parameters
@@ -43,7 +45,7 @@ sample-images/baboon.ppm output-images/baboon_roi12ds.ppm 1 histgsoth 50 100 150
 
 ## Compile and Run:
 Output images written in output-images/ directory after execution
-```
+```bash
 # Clone from github if needed
 git clone https://github.com/sawyermade/image_processing_fa19.git 
 cd image_processing_fa19/hw2
@@ -52,6 +54,6 @@ make
 ```
 
 ## Parameters file
-```
+```bash
 cat parameters.txt
 ```
