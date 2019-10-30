@@ -1,0 +1,2 @@
+# Opencv stuff
+sample-images/baboon.pgm output-images/baboon_dft-1.pgm 1 dft 0 0 256 256 3

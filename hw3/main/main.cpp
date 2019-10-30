@@ -34,6 +34,32 @@ int main (int argc, char** argv)
 		return -1;
 	}
 
+	// Kernels
+	vector<vector<int> > sobel3x = {
+		{-1, 0, 1},
+		{-2, 0, 2},
+		{-1, 0, 1}
+	};
+	vector<vector<int> > sobel3y = {
+		{-1, -2, -1},
+		{ 0,  0,  0},
+		{ 1,  2,  1}
+	};
+	vector<vector<int> > sobel5x = {
+		{ -5,  -4, 0,  4,  5},
+		{ -8, -10, 0, 10,  8},
+		{-10, -20, 0, 20, 10},
+		{ -8, -10, 0, 10,  8},
+		{ -5,  -4, 0,  4,  5}
+	};
+	vector<vector<int> > sobel5y = {
+		{-5,  -8, -10,  -8, -5},
+		{-4, -10, -20, -10, -4},
+		{ 0,   0,   0,   0,  0},
+		{ 4,  10,  20,  10,  4},
+		{ 5,   8,  10,   8,  5}
+	};
+
 	//loop that read every line in parameters file.
 	pair<int, int> start, size;
 	vector<vector<int> > rois_vec;
@@ -78,32 +104,6 @@ int main (int argc, char** argv)
 		tgt = outfile;
 		tgt_cv = imread(infile, -1);
 		bool cv_flag = false;
-
-		// Kernels
-		vector<vector<int> > sobel3x = {
-			{-1, 0, 1},
-			{-2, 0, 2},
-			{-1, 0, 1}
-		};
-		vector<vector<int> > sobel3y = {
-			{-1, -2, -1},
-			{ 0,  0,  0},
-			{ 1,  2,  1}
-		};
-		vector<vector<int> > sobel5x = {
-			{ -5,  -4, 0,  4,  5},
-			{ -8, -10, 0, 10,  8},
-			{-10, -20, 0, 20, 10},
-			{ -8, -10, 0, 10,  8},
-			{ -5,  -4, 0,  4,  5}
-		};
-		vector<vector<int> > sobel5y = {
-			{-5,  -8, -10,  -8, -5},
-			{-4, -10, -20, -10, -4},
-			{ 0,   0,   0,   0,  0},
-			{ 4,  10,  20,  10,  4},
-			{ 5,   8,  10,   8,  5}
-		};
 
 		if(fp.eof()) break;
 		rois_vec.clear();

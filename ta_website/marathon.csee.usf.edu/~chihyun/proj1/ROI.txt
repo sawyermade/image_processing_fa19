@@ -1,0 +1,3 @@
+2	# number of ROI
+0 0 100 300 100 150		# x y sx sy T1 T2
+320 80 150 150 50 150	# x y sx sy T1 T2
