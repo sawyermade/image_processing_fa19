@@ -146,6 +146,75 @@ int main (int argc, char** argv)
 				}
 			}
 
+			else if(!strncasecmp(pch.c_str(),"dftlpn",MAXLEN)){
+				// Local vars
+				Mat img_roi, magbefore, magafter;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+				int d0, d1, d2;
+
+				// Gets D0
+				fp >> d0 >> d1 >> d2;
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and runs low pass dft
+					img_roi = tgt_cv(cv_roi);
+					utilities::dftlpn(img_roi, magbefore, magafter, d0, d1, d2);
+
+					// Saves mag before and after images
+					imwrite(outfile + "-mag_before.png", magbefore);
+					imwrite(outfile + "-mag_after.png", magafter);
+
+					cv_flag = true;
+				}
+			}
+
+			else if(!strncasecmp(pch.c_str(),"dfthpn",MAXLEN)){
+				// Local vars
+				Mat img_roi, magbefore, magafter;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+				int d0, d1, d2;
+
+				// Gets D0
+				fp >> d0 >> d1 >> d2;
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and runs low pass dft
+					img_roi = tgt_cv(cv_roi);
+					utilities::dftlpn(img_roi, magbefore, magafter, d0, d1, d2);
+
+					// Saves mag before and after images
+					imwrite(outfile + "-mag_before.png", magbefore);
+					imwrite(outfile + "-mag_after.png", magafter);
+
+					cv_flag = true;
+				}
+			}
+
+			else if(!strncasecmp(pch.c_str(),"dftn",MAXLEN)){
+				// Local vars
+				Mat img_roi, magbefore, magafter;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+				int d0, d1;
+
+				// Gets D0
+				fp >> d0 >> d1;
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and runs low pass dft
+					img_roi = tgt_cv(cv_roi);
+					utilities::dftn(img_roi, magbefore, magafter, d0, d1); 
+
+					// Saves mag before and after images
+					imwrite(outfile + "-mag_before.png", magbefore);
+					imwrite(outfile + "-mag_after.png", magafter);
+
+					cv_flag = true;
+				}
+			}
+
 			else if(!strncasecmp(pch.c_str(),"dfthp",MAXLEN)){
 				// Local vars
 				Mat img_roi, magbefore, magafter;

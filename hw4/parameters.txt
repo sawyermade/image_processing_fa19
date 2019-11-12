@@ -1,3 +1,6 @@
 # Opencv stuff
-sample-images/baboon.pgm output-images/baboon_dftlp-1.pgm 1 dftlp 0 0 512 512 50
-sample-images/baboon.pgm output-images/baboon_dfthp-1.pgm 1 dfthp 0 0 512 512 25
+sample-images/baboon.pgm output-images/baboon_dftlp-1.png 1 dftlp 0 0 512 512 50
+sample-images/baboon.pgm output-images/baboon_dfthp-1.png 1 dfthp 0 0 512 512 25
+sample-images/baboon.pgm output-images/baboon_dftn-1.png 1 dftn 0 0 512 512 100 150
+sample-images/baboon.pgm output-images/baboon_dftlpn-1.png 1 dftlpn 0 0 512 512 15 100 150
+sample-images/baboon.pgm output-images/baboon_dfthpn-1.png 1 dfthpn 0 0 512 512 25 100 150
