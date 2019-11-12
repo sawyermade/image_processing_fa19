@@ -7,6 +7,8 @@
 #include <sstream>
 #include <math.h>
 #include <algorithm>
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
 
 class utilities
 {
@@ -48,6 +50,13 @@ class utilities
 		static void binarizegs(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh, int ws);
 		static void binarizedeg(image& src, image& tgt, pair<int, int> start, pair<int, int> size, int thresh, int ws);
 		static void binarizegsdeg(image& src_grad, image& src_deg, image& tgt, pair<int, int> start, pair<int, int> size, int thresh_grad, int thresh_deg, int ws);
+
+		// hw4
+		static void swapQuads(cv::Mat &img);
+		static void cvdft(cv::Mat &src, cv::Mat &magI, cv::Mat &complexI_out);
+		static void cvidft(cv::Mat &tgt, cv::Mat &magI, cv::Mat &complexI);
+		static void dftlp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0);
+		static void dfthp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0);
 };
 
 #endif

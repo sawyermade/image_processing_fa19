@@ -6,8 +6,6 @@
 //MY INCLUDES
 #include <fstream>
 #include "hsi.h"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui/highgui.hpp"
 
 using namespace std;
 using namespace cv;
@@ -125,34 +123,47 @@ int main (int argc, char** argv)
 			if(!ovlap)
 				rois_vec.push_back(roi_vec);
 
-			if(!strncasecmp(pch.c_str(),"dft",MAXLEN)){
+			if(!strncasecmp(pch.c_str(),"dftlp",MAXLEN)){
 				// Local vars
-				Mat img_roi;
+				Mat img_roi, magbefore, magafter;
 				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+				int d0;
+
+				// Gets D0
+				fp >> d0;
 
 				// Checks overlap
 				if(!ovlap){
-					// Creates roi
+					// Creates roi and runs low pass dft
 					img_roi = tgt_cv(cv_roi);
-					// cout << "rows = " << img_roi.rows << ", cols = " << img_roi.cols << endl;
+					utilities::dftlp(img_roi, magbefore, magafter, d0); 
 
-					// int m, n;
-					// m = getOptimalDFTSize(img_roi.rows);
-					// n = getOptimalDFTSize(img_roi.cols);
-					// cout << "m = " << m << ", n = " << n << endl;
-					
-					vector<Mat> planes = {Mat_<float>(img_roi), Mat::zeros(img_roi.size(), CV_32F)};
-					Mat complexI;
-					merge(planes, complexI);
-					dft(complexI, complexI);
-					// cout << complexI.size() << endl;
+					// Saves mag before and after images
+					imwrite(outfile + "-mag_before.png", magbefore);
+					imwrite(outfile + "-mag_after.png", magafter);
 
-					split(complexI, planes);
-					magnitude(planes[0], planes[1], planes[0]);
-					Mat magI = planes[0];
-					// magI += Scalar::all(1);
-					cout << magI.channels() << endl;
-					magI.copyTo(tgt_cv(cv_roi));
+					cv_flag = true;
+				}
+			}
+
+			else if(!strncasecmp(pch.c_str(),"dfthp",MAXLEN)){
+				// Local vars
+				Mat img_roi, magbefore, magafter;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+				int d0;
+
+				// Gets D0
+				fp >> d0;
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and runs low pass dft
+					img_roi = tgt_cv(cv_roi);
+					utilities::dfthp(img_roi, magbefore, magafter, d0); 
+
+					// Saves mag before and after images
+					imwrite(outfile + "-mag_before.png", magbefore);
+					imwrite(outfile + "-mag_after.png", magafter);
 
 					cv_flag = true;
 				}

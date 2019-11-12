@@ -27,6 +27,133 @@ int utilities::checkValue(int value)
 //MY STUFF
 /*-----------------------------------------------------------------------*/
 
+void utilities::swapQuads(cv::Mat &img) {
+	// Rearranges amplitude image
+	// img = img(cv::Rect(0, 0, img.cols & -2, img.rows & -2));
+	int cx = img.cols/2;
+	int cy = img.rows/2;
+	cv::Mat q0(img, cv::Rect(0, 0, cx, cy));   // Top-Left - Create a ROI per quadrant
+    cv::Mat q1(img, cv::Rect(cx, 0, cx, cy));  // Top-Right
+    cv::Mat q2(img, cv::Rect(0, cy, cx, cy));  // Bottom-Left
+    cv::Mat q3(img, cv::Rect(cx, cy, cx, cy)); // Bottom-Right
+    // swap quadrants (Top-Left with Bottom-Right)
+    cv::Mat tmp;                           
+    q0.copyTo(tmp);
+    q3.copyTo(q0);
+    tmp.copyTo(q3);
+    // swap quadrant (Top-Right with Bottom-Left)
+    q1.copyTo(tmp);                    
+    q2.copyTo(q1);
+    tmp.copyTo(q2);
+}
+
+void utilities::cvidft(cv::Mat &tgt, cv::Mat &magI, cv::Mat &complexI){
+	// Creates fourier domain amplitude image
+	double minv, maxv;
+	cv::minMaxLoc(tgt, &minv, &maxv);
+	cv::Mat planes[2];
+	cv::split(complexI, planes);
+	cv::magnitude(planes[0], planes[1], magI);
+	magI += cv::Scalar::all(1);
+	cv::log(magI, magI);
+	cv::normalize(magI, magI, minv, maxv, CV_MINMAX);
+
+	// Converts back saves to target
+	cv::Mat temp, channels[2];
+	tgt.copyTo(temp);
+	utilities::swapQuads(complexI);
+	cv::idft(complexI, temp);
+	cv::normalize(temp, temp, minv, maxv, CV_MINMAX);
+	temp.convertTo(temp, CV_8U);
+	cv::split(temp, channels);
+	channels[0].copyTo(tgt);
+}
+
+void utilities::cvdft(cv::Mat &src, cv::Mat &magI, cv::Mat &complexI){
+	// Gets min/max
+	double minv, maxv;
+	cv::minMaxLoc(src, &minv, &maxv);
+
+	// Pads image if needed
+	cv::Mat padded;
+	int m = cv::getOptimalDFTSize(src.rows);
+	int n = cv::getOptimalDFTSize(src.cols);
+	cv::copyMakeBorder(src, padded, 0, m - src.rows, 0, n - src.cols, cv::BORDER_CONSTANT, cv::Scalar::all(0));
+
+	// Create planes and run dft
+	cv::Mat planes[] = {cv::Mat_<float>(padded), cv::Mat::zeros(padded.size(), CV_32F)};
+	cv::merge(planes, 2, complexI);
+	cv::dft(complexI, complexI);
+
+	// Swaps quadrants
+	utilities::swapQuads(complexI);
+
+	// Creates fourier domain amplitude image
+	cv::split(complexI, planes);
+	cv::magnitude(planes[0], planes[1], magI);
+	magI += cv::Scalar::all(1);
+	cv::log(magI, magI);
+	cv::normalize(magI, magI, minv, maxv, CV_MINMAX);
+}
+
+void utilities::dftlp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0){
+	// Runs dft on src
+	cv::Mat complexI;
+	utilities::cvdft(tgt, magbefore, complexI);
+
+	// Runs low pass filter mask
+	cv::Mat mask(complexI.rows, complexI.cols, CV_32F);
+	int cx = complexI.cols / 2, cy = complexI.rows / 2, di;
+	for(int i = 0; i < complexI.rows; i++){
+		for(int j = 0; j < complexI.cols; j++){
+			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
+			if(di <= d0)
+				mask.at<float>(i, j) = 1;
+			else
+				mask.at<float>(i, j) = 0;
+		}
+	}
+
+	// Applies mask to complexI
+	cv::Mat planes[2];
+	cv::split(complexI, planes);
+	cv::multiply(planes[0], mask, planes[0]);
+	cv::multiply(planes[1], mask, planes[1]);
+	cv::merge(planes, 2, complexI);
+
+	// Inverse DFT
+	utilities::cvidft(tgt, magafter, complexI);
+}
+
+void utilities::dfthp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0){
+	// Runs dft on src
+	cv::Mat complexI;
+	utilities::cvdft(tgt, magbefore, complexI);
+
+	// Runs low pass filter mask
+	cv::Mat mask(complexI.rows, complexI.cols, CV_32F);
+	int cx = complexI.cols / 2, cy = complexI.rows / 2, di;
+	for(int i = 0; i < complexI.rows; i++){
+		for(int j = 0; j < complexI.cols; j++){
+			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
+			if(di >= d0)
+				mask.at<float>(i, j) = 1;
+			else
+				mask.at<float>(i, j) = 0;
+		}
+	}
+
+	// Applies mask to complexI
+	cv::Mat planes[2];
+	cv::split(complexI, planes);
+	cv::multiply(planes[0], mask, planes[0]);
+	cv::multiply(planes[1], mask, planes[1]);
+	cv::merge(planes, 2, complexI);
+
+	// Inverse DFT
+	utilities::cvidft(tgt, magafter, complexI);
+}
+
 void utilities::binarizegsdeg(image& src_grad, image& src_deg, image& tgt, pair<int, int> start, pair<int, int> size, int thresh_grad, int thresh_deg, int ws) {
 	// Local vars
 	int x1, y1, x2, y2, m, pixel_val_deg, pixel_val_grad, max_deg, min_deg;
