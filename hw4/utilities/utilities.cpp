@@ -63,7 +63,7 @@ void utilities::cvidft(cv::Mat &tgt, cv::Mat &magI, cv::Mat &complexI){
 	tgt.copyTo(temp);
 	utilities::swapQuads(complexI);
 	cv::idft(complexI, temp);
-	cv::normalize(temp, temp, minv, maxv, CV_MINMAX);
+	cv::normalize(temp, temp, 0, 255, CV_MINMAX);
 	temp.convertTo(temp, CV_8U);
 	cv::split(temp, channels);
 	channels[0].copyTo(tgt);
