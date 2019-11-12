@@ -58,7 +58,7 @@ void utilities::cvidft(cv::Mat &tgt, cv::Mat &magI, cv::Mat &complexI){
 	cv::log(magI, magI);
 	cv::normalize(magI, magI, minv, maxv, CV_MINMAX);
 
-	// Converts back saves to target
+	// Converts back to image and saves roi to target
 	cv::Mat temp, channels[2];
 	tgt.copyTo(temp);
 	utilities::swapQuads(complexI);
