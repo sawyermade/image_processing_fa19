@@ -1,39 +1,25 @@
-# Image Processing Grad USF Fall 2019 HW3
+# Image Processing Grad USF Fall 2019 HW4
 ## Processes:
-sobel = runs sobel filter over ROI
+dftlp = DFT with low pass filter
 
-sobelgb = sobel with amplitude/gradient binarization
+dfthp = DFT with high pass filter
 
-sobelgbdb = sobel with amplitude/gradient binarization and degree/direction binarization
+dftn = DFT with notch filter
 
-OPENCV Processes. Cannot run opencv and non-opencv processes on the same image
+dftlpn = DFT with low pass filter and notch
 
-ocvsobel = OpenCV sobel implementation
+dfthpbp = DFT with high pass filter and band pass
 
-ocvcanny = OpenCV canny
+## Parameters for Processes:
+dftlp X Y Sx Sy D0
 
-ocvhist = OpenCV histogram equalization
+dfthp X Y Sx Sy D0
 
-ocvotsu = OpenCV OTSU
+dftn X Y Sx Sy D1 D2
 
-ocvotsuhist = OpenCV OTSU with foreground histogram equalized
+dftlpn X Y Sx Sy D0 D1 D2
 
-## Parameters for Processes: WS is odd number that will be squared for total size
-sobel X Y Sx Sy WS
-
-sobel X Y Sx Sy WS Ta
-
-sobelgbdb X Y Sx Sy WS Ta Td
-
-ocvsobel X Y Sx Sy WS
-
-ocvcanny X Y Sx Sy WS
-
-ocvhist X Y Sx Sy 
-
-ocvotsu X Y Sx Sy 
-
-ocvotsuhist X Y Sx Sy
+dfthpbp X Y Sx Sy D0 D1 D2
 
 ## Input File Format:
 input/file output/file #Processes ProcessName Parameters
@@ -48,7 +34,7 @@ Output images written in output-images/ directory after execution
 ```bash
 # Clone from github if needed
 git clone https://github.com/sawyermade/image_processing_fa19.git 
-cd image_processing_fa19/hw2
+cd image_processing_fa19/hw4
 make
 ./hw parameters.txt
 ```

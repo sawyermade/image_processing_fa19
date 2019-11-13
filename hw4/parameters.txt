@@ -1,6 +1,27 @@
-# Opencv stuff
+# DFT Low Pass
 sample-images/baboon.pgm output-images/baboon_dftlp-1.png 1 dftlp 0 0 512 512 50
-sample-images/baboon.pgm output-images/baboon_dfthp-1.png 1 dfthp 0 0 512 512 25
+sample-images/baboon.pgm output-images/baboon_dftlp-2.png 2 dftlp 0 0 256 256 25 dftlp 256 256 256 256 25
+#sample-images/baboon_blurred.pgm output-images/baboon_dfts-1.png 1 dfts 0 0 512 512 50
+
+# DFT High Pass
+sample-images/baboon.pgm output-images/baboon_dfthp-1.png 1 dfthp 0 0 512 512 50
+sample-images/baboon.pgm output-images/baboon_dfthp-2.png 2 dfthp 256 0 256 256 25 dfthp 0 256 256 256 25
+
+# DFT Notch
 sample-images/baboon.pgm output-images/baboon_dftn-1.png 1 dftn 0 0 512 512 100 150
-sample-images/baboon.pgm output-images/baboon_dftlpn-1.png 1 dftlpn 0 0 512 512 15 100 150
-sample-images/baboon.pgm output-images/baboon_dfthpn-1.png 1 dfthpn 0 0 512 512 25 100 150
+sample-images/baboon.pgm output-images/baboon_dftn-2.png 2 dftn 0 0 256 256 100 150 dftn 256 256 256 256 100 150
+
+# DFT Band Pass
+sample-images/baboon.pgm output-images/baboon_dftbp-1.png 1 dftbp 0 0 512 512 15 100
+sample-images/baboon.pgm output-images/baboon_dftbp-2.png 2 dftbp 0 0 256 256 12 38 dftbp 256 256 256 256 50 200
+
+# DFT Low Pass and Notch
+sample-images/baboon.pgm output-images/baboon_dftlpn-1.png 1 dftlpn 0 0 512 512 20 50 150
+sample-images/baboon.pgm output-images/baboon_dftlpn-2.png 2 dftlpn 0 0 256 256 15 100 150 dftlpn 256 256 256 256 15 100 150
+
+# DFT LP, HP, Notch, LP and Notch
+sample-images/baboon.pgm output-images/baboon_dft-1.png 4 dftlp 0 0 247 247 25 dfthp 256 0 256 256 25 dftn 0 256 256 256 100 150 dftlpn 256 256 256 256 15 100 150
+
+# DFT High Pass and Band Pass
+sample-images/baboon.pgm output-images/baboon_dfthpbp-1.png 1 dfthpbp 0 0 512 512 15 100 150
+sample-images/baboon.pgm output-images/baboon_dfthpbp-2.png 2 dfthpbp 0 0 256 256 15 100 150 dfthpbp 256 256 256 256 15 100 150

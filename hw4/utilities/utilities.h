@@ -56,9 +56,12 @@ class utilities
 		static void cvdft(cv::Mat &src, cv::Mat &magI, cv::Mat &complexI_out);
 		static void cvidft(cv::Mat &tgt, cv::Mat &magI, cv::Mat &complexI);
 		static void dftlp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0);
+		static void dfts(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0);
 		static void dfthp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0);
-		static void dftn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1);
+		static void dftn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d1, int d2);
+		static void dftbp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d1, int d2);
 		static void dftlpn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1, int d2);
+		static void dfthpbp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1, int d2);
 		static void dfthpn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1, int d2);
 };
 

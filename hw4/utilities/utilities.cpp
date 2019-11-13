@@ -58,15 +58,17 @@ void utilities::cvidft(cv::Mat &tgt, cv::Mat &magI, cv::Mat &complexI){
 	cv::log(magI, magI);
 	cv::normalize(magI, magI, minv, maxv, CV_MINMAX);
 
-	// Converts back to image and saves roi to target
+	// Converts back to image, crops padding, and saves roi to target
 	cv::Mat temp, channels[2];
-	tgt.copyTo(temp);
 	utilities::swapQuads(complexI);
-	cv::idft(complexI, temp);
+	cv::idft(complexI, temp, cv::DFT_SCALE | cv::DFT_REAL_OUTPUT);
 	cv::normalize(temp, temp, 0, 255, CV_MINMAX);
 	temp.convertTo(temp, CV_8U);
-	cv::split(temp, channels);
-	channels[0].copyTo(tgt);
+	temp = temp(cv::Rect(0, 0, tgt.cols, tgt.rows));
+	temp.copyTo(tgt);
+	// cv::split(temp, channels);
+	// channels[0] = channels[0](cv::Rect(0, 0, tgt.cols, tgt.rows));
+	// channels[0].copyTo(tgt);
 }
 
 void utilities::cvdft(cv::Mat &src, cv::Mat &magI, cv::Mat &complexI){
@@ -125,6 +127,38 @@ void utilities::dftlp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d
 	utilities::cvidft(tgt, magafter, complexI);
 }
 
+void utilities::dfts(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0){
+	// Runs dft on src
+	cv::Mat complexI;
+	utilities::cvdft(tgt, magbefore, complexI);
+
+	// Runs low pass filter mask
+	cv::Mat mask(complexI.rows, complexI.cols, CV_32F);
+	int cx = complexI.cols / 2, cy = complexI.rows / 2, di;
+	for(int i = 0; i < complexI.rows; i++){
+		for(int j = 0; j < complexI.cols; j++){
+			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
+			if(di >= d0)
+				mask.at<float>(i, j) = 1;
+			else
+				mask.at<float>(i, j) = 0;
+		}
+	}
+
+	// Applies mask to complexI
+	cv::Mat planes[2], new_complexI, sub_complexI;
+	cv::split(complexI, planes);
+	cv::multiply(planes[0], mask, planes[0]);
+	cv::multiply(planes[1], mask, planes[1]);
+	cv::merge(planes, 2, new_complexI);
+
+	// cv::addWeighted(complexI, 1.5, new_complexI, -0.5, 0, sub_complexI);
+	cv::addWeighted(complexI, -0.5, new_complexI, 1.5, 0, sub_complexI);
+
+	// Inverse DFT
+	utilities::cvidft(tgt, magafter, sub_complexI);
+}
+
 void utilities::dfthp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0){
 	// Runs dft on src
 	cv::Mat complexI;
@@ -137,6 +171,64 @@ void utilities::dfthp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d
 		for(int j = 0; j < complexI.cols; j++){
 			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
 			if(di >= d0)
+				mask.at<float>(i, j) = 1;
+			else
+				mask.at<float>(i, j) = 0;
+		}
+	}
+
+	// Applies mask to complexI
+	cv::Mat planes[2];
+	cv::split(complexI, planes);
+	cv::multiply(planes[0], mask, planes[0]);
+	cv::multiply(planes[1], mask, planes[1]);
+	cv::merge(planes, 2, complexI);
+
+	// Inverse DFT
+	utilities::cvidft(tgt, magafter, complexI);
+}
+
+void utilities::dftn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d1, int d2){
+	// Runs dft on src
+	cv::Mat complexI;
+	utilities::cvdft(tgt, magbefore, complexI);
+
+	// Runs low pass filter mask
+	cv::Mat mask(complexI.rows, complexI.cols, CV_32F);
+	int cx = complexI.cols / 2, cy = complexI.rows / 2, di;
+	for(int i = 0; i < complexI.rows; i++){
+		for(int j = 0; j < complexI.cols; j++){
+			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
+			if(di <= d1 || di >= d2)
+				mask.at<float>(i, j) = 1;
+			else
+				mask.at<float>(i, j) = 0;
+		}
+	}
+
+	// Applies mask to complexI
+	cv::Mat planes[2];
+	cv::split(complexI, planes);
+	cv::multiply(planes[0], mask, planes[0]);
+	cv::multiply(planes[1], mask, planes[1]);
+	cv::merge(planes, 2, complexI);
+
+	// Inverse DFT
+	utilities::cvidft(tgt, magafter, complexI);
+}
+
+void utilities::dftbp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d1, int d2){
+	// Runs dft on src
+	cv::Mat complexI;
+	utilities::cvdft(tgt, magbefore, complexI);
+
+	// Runs low pass filter mask
+	cv::Mat mask(complexI.rows, complexI.cols, CV_32F);
+	int cx = complexI.cols / 2, cy = complexI.rows / 2, di;
+	for(int i = 0; i < complexI.rows; i++){
+		for(int j = 0; j < complexI.cols; j++){
+			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
+			if(di >= d1 && di <= d2)
 				mask.at<float>(i, j) = 1;
 			else
 				mask.at<float>(i, j) = 0;
@@ -183,7 +275,7 @@ void utilities::dftlpn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int 
 	utilities::cvidft(tgt, magafter, complexI);
 }
 
-void utilities::dfthpn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1, int d2){
+void utilities::dfthpbp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1, int d2){
 	// Runs dft on src
 	cv::Mat complexI;
 	utilities::cvdft(tgt, magbefore, complexI);
@@ -194,7 +286,7 @@ void utilities::dfthpn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int 
 	for(int i = 0; i < complexI.rows; i++){
 		for(int j = 0; j < complexI.cols; j++){
 			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
-			if(di >= d0 || (di >= d1 && di <= d2))
+			if(di >= d0 && (di <= d1 || di >= d2))
 				mask.at<float>(i, j) = 1;
 			else
 				mask.at<float>(i, j) = 0;
@@ -212,7 +304,7 @@ void utilities::dfthpn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int 
 	utilities::cvidft(tgt, magafter, complexI);
 }
 
-void utilities::dftn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1){
+void utilities::dfthpn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1, int d2){
 	// Runs dft on src
 	cv::Mat complexI;
 	utilities::cvdft(tgt, magbefore, complexI);
@@ -223,7 +315,7 @@ void utilities::dftn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0
 	for(int i = 0; i < complexI.rows; i++){
 		for(int j = 0; j < complexI.cols; j++){
 			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
-			if(di >= d0 && di <= d1)
+			if(di >= d0 || (di >= d1 && di <= d2))
 				mask.at<float>(i, j) = 1;
 			else
 				mask.at<float>(i, j) = 0;

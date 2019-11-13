@@ -139,77 +139,8 @@ int main (int argc, char** argv)
 					utilities::dftlp(img_roi, magbefore, magafter, d0); 
 
 					// Saves mag before and after images
-					imwrite(outfile + "-mag_before.png", magbefore);
-					imwrite(outfile + "-mag_after.png", magafter);
-
-					cv_flag = true;
-				}
-			}
-
-			else if(!strncasecmp(pch.c_str(),"dftlpn",MAXLEN)){
-				// Local vars
-				Mat img_roi, magbefore, magafter;
-				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
-				int d0, d1, d2;
-
-				// Gets D0
-				fp >> d0 >> d1 >> d2;
-
-				// Checks overlap
-				if(!ovlap){
-					// Creates roi and runs low pass dft
-					img_roi = tgt_cv(cv_roi);
-					utilities::dftlpn(img_roi, magbefore, magafter, d0, d1, d2);
-
-					// Saves mag before and after images
-					imwrite(outfile + "-mag_before.png", magbefore);
-					imwrite(outfile + "-mag_after.png", magafter);
-
-					cv_flag = true;
-				}
-			}
-
-			else if(!strncasecmp(pch.c_str(),"dfthpn",MAXLEN)){
-				// Local vars
-				Mat img_roi, magbefore, magafter;
-				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
-				int d0, d1, d2;
-
-				// Gets D0
-				fp >> d0 >> d1 >> d2;
-
-				// Checks overlap
-				if(!ovlap){
-					// Creates roi and runs low pass dft
-					img_roi = tgt_cv(cv_roi);
-					utilities::dftlpn(img_roi, magbefore, magafter, d0, d1, d2);
-
-					// Saves mag before and after images
-					imwrite(outfile + "-mag_before.png", magbefore);
-					imwrite(outfile + "-mag_after.png", magafter);
-
-					cv_flag = true;
-				}
-			}
-
-			else if(!strncasecmp(pch.c_str(),"dftn",MAXLEN)){
-				// Local vars
-				Mat img_roi, magbefore, magafter;
-				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
-				int d0, d1;
-
-				// Gets D0
-				fp >> d0 >> d1;
-
-				// Checks overlap
-				if(!ovlap){
-					// Creates roi and runs low pass dft
-					img_roi = tgt_cv(cv_roi);
-					utilities::dftn(img_roi, magbefore, magafter, d0, d1); 
-
-					// Saves mag before and after images
-					imwrite(outfile + "-mag_before.png", magbefore);
-					imwrite(outfile + "-mag_after.png", magafter);
+					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
+					imwrite(outfile + "-mag_after-" + to_string(i) + ".png", magafter);
 
 					cv_flag = true;
 				}
@@ -231,8 +162,145 @@ int main (int argc, char** argv)
 					utilities::dfthp(img_roi, magbefore, magafter, d0); 
 
 					// Saves mag before and after images
-					imwrite(outfile + "-mag_before.png", magbefore);
-					imwrite(outfile + "-mag_after.png", magafter);
+					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
+					imwrite(outfile + "-mag_after-" + to_string(i) + ".png", magafter);
+					cv_flag = true;
+				}
+			}
+
+			else if(!strncasecmp(pch.c_str(),"dftn",MAXLEN)){
+				// Local vars
+				Mat img_roi, magbefore, magafter;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+				int d1, d2;
+
+				// Gets D0
+				fp >> d1 >> d2;
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and runs low pass dft
+					img_roi = tgt_cv(cv_roi);
+					utilities::dftn(img_roi, magbefore, magafter, d1, d2);
+
+					// Saves mag before and after images
+					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
+					imwrite(outfile + "-mag_after-" + to_string(i) + ".png", magafter);
+
+					cv_flag = true;
+				}
+			}
+
+			else if(!strncasecmp(pch.c_str(),"dftbp",MAXLEN)){
+				// Local vars
+				Mat img_roi, magbefore, magafter;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+				int d1, d2;
+
+				// Gets D0
+				fp >> d1 >> d2;
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and runs low pass dft
+					img_roi = tgt_cv(cv_roi);
+					utilities::dftbp(img_roi, magbefore, magafter, d1, d2); 
+
+					// Saves mag before and after images
+					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
+					imwrite(outfile + "-mag_after-" + to_string(i) + ".png", magafter);
+
+					cv_flag = true;
+				}
+			}
+
+			else if(!strncasecmp(pch.c_str(),"dftlpn",MAXLEN)){
+				// Local vars
+				Mat img_roi, magbefore, magafter;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+				int d0, d1, d2;
+
+				// Gets D0
+				fp >> d0 >> d1 >> d2;
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and runs low pass dft
+					img_roi = tgt_cv(cv_roi);
+					utilities::dftlpn(img_roi, magbefore, magafter, d0, d1, d2);
+
+					// Saves mag before and after images
+					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
+					imwrite(outfile + "-mag_after-" + to_string(i) + ".png", magafter);
+
+					cv_flag = true;
+				}
+			}
+
+			else if(!strncasecmp(pch.c_str(),"dfthpbp",MAXLEN)){
+				// Local vars
+				Mat img_roi, magbefore, magafter;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+				int d0, d1, d2;
+
+				// Gets D0
+				fp >> d0 >> d1 >> d2;
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and runs low pass dft
+					img_roi = tgt_cv(cv_roi);
+					utilities::dfthpbp(img_roi, magbefore, magafter, d0, d1, d2);
+
+					// Saves mag before and after images
+					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
+					imwrite(outfile + "-mag_after-" + to_string(i) + ".png", magafter);
+
+					cv_flag = true;
+				}
+			}
+
+			else if(!strncasecmp(pch.c_str(),"dfthpn",MAXLEN)){
+				// Local vars
+				Mat img_roi, magbefore, magafter;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+				int d0, d1, d2;
+
+				// Gets D0
+				fp >> d0 >> d1 >> d2;
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and runs low pass dft
+					img_roi = tgt_cv(cv_roi);
+					utilities::dftlpn(img_roi, magbefore, magafter, d0, d1, d2);
+
+					// Saves mag before and after images
+					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
+					imwrite(outfile + "-mag_after-" + to_string(i) + ".png", magafter);
+
+					cv_flag = true;
+				}
+			}
+
+			else if(!strncasecmp(pch.c_str(),"dfts",MAXLEN)){
+				// Local vars
+				Mat img_roi, magbefore, magafter;
+				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
+				int d0;
+
+				// Gets D0
+				fp >> d0;
+
+				// Checks overlap
+				if(!ovlap){
+					// Creates roi and runs low pass dft
+					img_roi = tgt_cv(cv_roi);
+					utilities::dfts(img_roi, magbefore, magafter, d0); 
+
+					// Saves mag before and after images
+					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
+					imwrite(outfile + "-mag_after-" + to_string(i) + ".png", magafter);
 
 					cv_flag = true;
 				}
