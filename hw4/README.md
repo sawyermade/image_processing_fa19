@@ -6,6 +6,8 @@ dfthp = DFT with high pass filter
 
 dftn = DFT with notch filter
 
+dftbp = DFT with band pass filter
+
 dftlpn = DFT with low pass filter and notch
 
 dfthpbp = DFT with high pass filter and band pass
@@ -16,6 +18,8 @@ dftlp X Y Sx Sy D0
 dfthp X Y Sx Sy D0
 
 dftn X Y Sx Sy D1 D2
+
+dftbp X Y Sx Sy D1 D2
 
 dftlpn X Y Sx Sy D0 D1 D2
 
