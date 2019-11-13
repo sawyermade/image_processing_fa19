@@ -49,9 +49,9 @@ void utilities::swapQuads(cv::Mat &img) {
 }
 
 cv::Mat utilities::create_mask(Filter filter, int rows, int cols, int d0, int d1, int d2){
-	cv::Mat mask(rows, cols, CV_32FC2);
-	int cx = cols / 2, cy = rows / 2;
 	double di;
+	int cx = cols / 2, cy = rows / 2;
+	cv::Mat mask(rows, cols, CV_32FC2, cv::Scalar(0));
 	for(int i = 0; i < rows; i++){
 		for(int j = 0; j < cols; j++){
 			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
@@ -61,20 +61,12 @@ cv::Mat utilities::create_mask(Filter filter, int rows, int cols, int d0, int d1
 						mask.at<cv::Vec2f>(i, j)[0] = 1;
 						mask.at<cv::Vec2f>(i, j)[1] = 1;
 					}
-					else{
-						mask.at<cv::Vec2f>(i, j)[0] = 0;
-						mask.at<cv::Vec2f>(i, j)[1] = 0;
-					}
 					break;
 
 				case highpass:
 					if(di >= d0){
 						mask.at<cv::Vec2f>(i, j)[0] = 1;
 						mask.at<cv::Vec2f>(i, j)[1] = 1;
-					}
-					else{
-						mask.at<cv::Vec2f>(i, j)[0] = 0;
-						mask.at<cv::Vec2f>(i, j)[1] = 0;
 					}
 					break;
 
@@ -83,20 +75,12 @@ cv::Mat utilities::create_mask(Filter filter, int rows, int cols, int d0, int d1
 						mask.at<cv::Vec2f>(i, j)[0] = 1;
 						mask.at<cv::Vec2f>(i, j)[1] = 1;
 					}
-					else{
-						mask.at<cv::Vec2f>(i, j)[0] = 0;
-						mask.at<cv::Vec2f>(i, j)[1] = 0;
-					}
 					break;
 
 				case bandpass:
 					if(di >= d1 && di <= d2){
 						mask.at<cv::Vec2f>(i, j)[0] = 1;
 						mask.at<cv::Vec2f>(i, j)[1] = 1;
-					}
-					else{
-						mask.at<cv::Vec2f>(i, j)[0] = 0;
-						mask.at<cv::Vec2f>(i, j)[1] = 0;
 					}
 					break;
 
@@ -105,20 +89,12 @@ cv::Mat utilities::create_mask(Filter filter, int rows, int cols, int d0, int d1
 						mask.at<cv::Vec2f>(i, j)[0] = 1;
 						mask.at<cv::Vec2f>(i, j)[1] = 1;
 					}
-					else{
-						mask.at<cv::Vec2f>(i, j)[0] = 0;
-						mask.at<cv::Vec2f>(i, j)[1] = 0;
-					}
 					break;
 
 				case hpbp:
 					if(di >= d0 && (di <= d1 || di >= d2)){
 						mask.at<cv::Vec2f>(i, j)[0] = 1;
 						mask.at<cv::Vec2f>(i, j)[1] = 1;
-					}
-					else{
-						mask.at<cv::Vec2f>(i, j)[0] = 0;
-						mask.at<cv::Vec2f>(i, j)[1] = 0;
 					}
 					break;
 
