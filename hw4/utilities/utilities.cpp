@@ -172,7 +172,7 @@ void utilities::dft_filter(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, 
 	cv::Mat complexI;
 	utilities::cvdft(tgt, magbefore, complexI);
 
-	// Runs filter mask
+	// Creates mask for filter
 	cv::Mat mask = utilities::create_mask(filter, complexI.rows, complexI.cols, d0, d1, d2);
 
 	// Applies mask to complexI
