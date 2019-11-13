@@ -48,14 +48,33 @@ void utilities::swapQuads(cv::Mat &img) {
     tmp.copyTo(q2);
 }
 
+void utilities::dft_mag(cv::Mat &src, cv::Mat &complexI, cv::Mat &magI){
+	// Creates fourier domain amplitude image
+	cv::Mat planes[2];
+	double minv, maxv;
+	cv::split(complexI, planes);
+	cv::magnitude(planes[0], planes[1], magI);
+	magI += cv::Scalar::all(1);
+	cv::log(magI, magI);
+	cv::minMaxLoc(src, &minv, &maxv);
+	cv::normalize(magI, magI, minv, maxv, CV_MINMAX);
+}
+
 cv::Mat utilities::create_mask(Filter filter, int rows, int cols, int d0, int d1, int d2){
+	// Dij, centers, and 2 channel mask full of zeros variables
 	double di;
 	int cx = cols / 2, cy = rows / 2;
 	cv::Mat mask(rows, cols, CV_32FC2, cv::Scalar(0));
+
+	// Goes through the roi and sets appropriate mask locations for filter to 1
 	for(int i = 0; i < rows; i++){
 		for(int j = 0; j < cols; j++){
+			// Gets distance
 			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
+
+			// Switch for filter
 			switch(filter){
+				// Low Pass Filter
 				case lowpass : 
 					if(di <= d0){
 						mask.at<cv::Vec2f>(i, j)[0] = 1;
@@ -63,6 +82,7 @@ cv::Mat utilities::create_mask(Filter filter, int rows, int cols, int d0, int d1
 					}
 					break;
 
+				// High Pass Filter
 				case highpass:
 					if(di >= d0){
 						mask.at<cv::Vec2f>(i, j)[0] = 1;
@@ -70,6 +90,7 @@ cv::Mat utilities::create_mask(Filter filter, int rows, int cols, int d0, int d1
 					}
 					break;
 
+				// Notch / Band Stop Filter
 				case notch:
 					if(di <= d1 || di >= d2){
 						mask.at<cv::Vec2f>(i, j)[0] = 1;
@@ -77,6 +98,7 @@ cv::Mat utilities::create_mask(Filter filter, int rows, int cols, int d0, int d1
 					}
 					break;
 
+				// Band Pass Filter
 				case bandpass:
 					if(di >= d1 && di <= d2){
 						mask.at<cv::Vec2f>(i, j)[0] = 1;
@@ -84,6 +106,7 @@ cv::Mat utilities::create_mask(Filter filter, int rows, int cols, int d0, int d1
 					}
 					break;
 
+				// Low Pass and Notch Filters
 				case lpn:
 					if(di <= d0 || (di >= d1 && di <= d2)){
 						mask.at<cv::Vec2f>(i, j)[0] = 1;
@@ -91,6 +114,7 @@ cv::Mat utilities::create_mask(Filter filter, int rows, int cols, int d0, int d1
 					}
 					break;
 
+				// High Pass and Bound Pass Filters
 				case hpbp:
 					if(di >= d0 && (di <= d1 || di >= d2)){
 						mask.at<cv::Vec2f>(i, j)[0] = 1;
@@ -98,25 +122,19 @@ cv::Mat utilities::create_mask(Filter filter, int rows, int cols, int d0, int d1
 					}
 					break;
 
+				// Nothing
 				default : break;
 			}
 					
 		}
 	}
-
+	// Returns mask
 	return mask;
 }
 
 void utilities::cvidft(cv::Mat &tgt, cv::Mat &magI, cv::Mat &complexI){
 	// Creates fourier domain amplitude image
-	double minv, maxv;
-	cv::minMaxLoc(tgt, &minv, &maxv);
-	cv::Mat planes[2];
-	cv::split(complexI, planes);
-	cv::magnitude(planes[0], planes[1], magI);
-	magI += cv::Scalar::all(1);
-	cv::log(magI, magI);
-	cv::normalize(magI, magI, minv, maxv, CV_MINMAX);
+	utilities::dft_mag(tgt, complexI, magI);
 
 	// Converts back to image, crops padding, and saves roi to target
 	utilities::swapQuads(complexI);
@@ -147,11 +165,7 @@ void utilities::cvdft(cv::Mat &src, cv::Mat &magI, cv::Mat &complexI){
 	utilities::swapQuads(complexI);
 
 	// Creates fourier domain amplitude image
-	cv::split(complexI, planes);
-	cv::magnitude(planes[0], planes[1], magI);
-	magI += cv::Scalar::all(1);
-	cv::log(magI, magI);
-	cv::normalize(magI, magI, minv, maxv, CV_MINMAX);
+	utilities::dft_mag(src, complexI, magI);
 }
 
 void utilities::dft_filter(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1, int d2, Filter filter){

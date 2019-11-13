@@ -55,6 +55,7 @@ class utilities
 
 		// hw4
 		static void swapQuads(cv::Mat &img);
+		static void dft_mag(cv::Mat &src, cv::Mat &complexI, cv::Mat &magI);
 		static cv::Mat create_mask(Filter filter, int rows, int cols, int d0, int d1, int d2);
 		static void cvdft(cv::Mat &src, cv::Mat &magI, cv::Mat &complexI_out);
 		static void cvidft(cv::Mat &tgt, cv::Mat &magI, cv::Mat &complexI);
