@@ -124,8 +124,7 @@ cv::Mat utilities::create_mask(Filter filter, int rows, int cols, int d0, int d1
 
 				// Nothing
 				default : break;
-			}
-					
+			}		
 		}
 	}
 	// Returns mask
