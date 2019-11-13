@@ -27,8 +27,6 @@ int utilities::checkValue(int value)
 //MY STUFF
 /*-----------------------------------------------------------------------*/
 
-
-
 void utilities::swapQuads(cv::Mat &img) {
 	// Rearranges amplitude image
 	int cx = img.cols / 2;
