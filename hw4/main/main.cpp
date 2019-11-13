@@ -283,29 +283,6 @@ int main (int argc, char** argv)
 				}
 			}
 
-			else if(!strncasecmp(pch.c_str(),"dfts",MAXLEN)){
-				// Local vars
-				Mat img_roi, magbefore, magafter;
-				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
-				int d0;
-
-				// Gets D0
-				fp >> d0;
-
-				// Checks overlap
-				if(!ovlap){
-					// Creates roi and runs low pass dft
-					img_roi = tgt_cv(cv_roi);
-					utilities::dfts(img_roi, magbefore, magafter, d0); 
-
-					// Saves mag before and after images
-					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
-					imwrite(outfile + "-mag_after-" + to_string(i) + ".png", magafter);
-
-					cv_flag = true;
-				}
-			}
-
 			// hist equal opencv
 			else if(!strncasecmp(pch.c_str(),"ocvotsuhist",MAXLEN)) {
 				// Local vars
