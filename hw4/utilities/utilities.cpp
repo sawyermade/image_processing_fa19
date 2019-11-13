@@ -27,6 +27,8 @@ int utilities::checkValue(int value)
 //MY STUFF
 /*-----------------------------------------------------------------------*/
 
+
+
 void utilities::swapQuads(cv::Mat &img) {
 	// Rearranges amplitude image
 	int cx = img.cols / 2;
@@ -46,6 +48,88 @@ void utilities::swapQuads(cv::Mat &img) {
     q1.copyTo(tmp);                    
     q2.copyTo(q1);
     tmp.copyTo(q2);
+}
+
+cv::Mat utilities::create_mask(Filter filter, int rows, int cols, int d0, int d1, int d2){
+	cv::Mat mask(rows, cols, CV_32FC2);
+	int cx = cols / 2, cy = rows / 2, di;
+	for(int i = 0; i < rows; i++){
+		for(int j = 0; j < cols; j++){
+			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
+			switch(filter){
+				case lowpass : 
+					if(di <= d0){
+						mask.at<cv::Vec2f>(i, j)[0] = 1;
+						mask.at<cv::Vec2f>(i, j)[1] = 1;
+					}
+					else{
+						mask.at<cv::Vec2f>(i, j)[0] = 0;
+						mask.at<cv::Vec2f>(i, j)[1] = 0;
+					}
+					break;
+
+				case highpass:
+					if(di >= d0){
+						mask.at<cv::Vec2f>(i, j)[0] = 1;
+						mask.at<cv::Vec2f>(i, j)[1] = 1;
+					}
+					else{
+						mask.at<cv::Vec2f>(i, j)[0] = 0;
+						mask.at<cv::Vec2f>(i, j)[1] = 0;
+					}
+					break;
+
+				case notch:
+					if(di <= d1 || di >= d2){
+						mask.at<cv::Vec2f>(i, j)[0] = 1;
+						mask.at<cv::Vec2f>(i, j)[1] = 1;
+					}
+					else{
+						mask.at<cv::Vec2f>(i, j)[0] = 0;
+						mask.at<cv::Vec2f>(i, j)[1] = 0;
+					}
+					break;
+
+				case bandpass:
+					if(di >= d1 && di <= d2){
+						mask.at<cv::Vec2f>(i, j)[0] = 1;
+						mask.at<cv::Vec2f>(i, j)[1] = 1;
+					}
+					else{
+						mask.at<cv::Vec2f>(i, j)[0] = 0;
+						mask.at<cv::Vec2f>(i, j)[1] = 0;
+					}
+					break;
+
+				case lpn:
+					if(di <= d0 || (di >= d1 && di <= d2)){
+						mask.at<cv::Vec2f>(i, j)[0] = 1;
+						mask.at<cv::Vec2f>(i, j)[1] = 1;
+					}
+					else{
+						mask.at<cv::Vec2f>(i, j)[0] = 0;
+						mask.at<cv::Vec2f>(i, j)[1] = 0;
+					}
+					break;
+
+				case hpbp:
+					if(di >= d0 && (di <= d1 || di >= d2)){
+						mask.at<cv::Vec2f>(i, j)[0] = 1;
+						mask.at<cv::Vec2f>(i, j)[1] = 1;
+					}
+					else{
+						mask.at<cv::Vec2f>(i, j)[0] = 0;
+						mask.at<cv::Vec2f>(i, j)[1] = 0;
+					}
+					break;
+
+				default : break;
+			}
+					
+		}
+	}
+
+	return mask;
 }
 
 void utilities::cvidft(cv::Mat &tgt, cv::Mat &magI, cv::Mat &complexI){
@@ -95,201 +179,13 @@ void utilities::cvdft(cv::Mat &src, cv::Mat &magI, cv::Mat &complexI){
 	cv::normalize(magI, magI, minv, maxv, CV_MINMAX);
 }
 
-void utilities::dftlp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0){
+void utilities::dft_filter(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1, int d2, Filter filter){
 	// Runs dft on src
 	cv::Mat complexI;
 	utilities::cvdft(tgt, magbefore, complexI);
 
 	// Runs low pass filter mask
-	cv::Mat mask(complexI.rows, complexI.cols, CV_32FC2);
-	int cx = complexI.cols / 2, cy = complexI.rows / 2, di;
-	for(int i = 0; i < complexI.rows; i++){
-		for(int j = 0; j < complexI.cols; j++){
-			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
-			if(di <= d0){
-				mask.at<cv::Vec2f>(i, j)[0] = 1;
-				mask.at<cv::Vec2f>(i, j)[1] = 1;
-			}
-			else{
-				mask.at<cv::Vec2f>(i, j)[0] = 0;
-				mask.at<cv::Vec2f>(i, j)[1] = 0;
-			}
-		}
-	}
-
-	// Applies mask to complexI
-	cv::multiply(complexI, mask, complexI);
-
-	// Inverse DFT
-	utilities::cvidft(tgt, magafter, complexI);
-}
-
-void utilities::dfthp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0){
-	// Runs dft on src
-	cv::Mat complexI;
-	utilities::cvdft(tgt, magbefore, complexI);
-
-	// Runs low pass filter mask
-	cv::Mat mask(complexI.rows, complexI.cols, CV_32FC2);
-	int cx = complexI.cols / 2, cy = complexI.rows / 2, di;
-	for(int i = 0; i < complexI.rows; i++){
-		for(int j = 0; j < complexI.cols; j++){
-			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
-			if(di >= d0){
-				mask.at<cv::Vec2f>(i, j)[0] = 1;
-				mask.at<cv::Vec2f>(i, j)[1] = 1;
-			}
-			else{
-				mask.at<cv::Vec2f>(i, j)[0] = 0;
-				mask.at<cv::Vec2f>(i, j)[1] = 0;
-			}
-		}
-	}
-
-	// Applies mask to complexI
-	cv::multiply(complexI, mask, complexI);
-
-	// Inverse DFT
-	utilities::cvidft(tgt, magafter, complexI);
-}
-
-void utilities::dftn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d1, int d2){
-	// Runs dft on src
-	cv::Mat complexI;
-	utilities::cvdft(tgt, magbefore, complexI);
-
-	// Runs low pass filter mask
-	cv::Mat mask(complexI.rows, complexI.cols, CV_32FC2);
-	int cx = complexI.cols / 2, cy = complexI.rows / 2, di;
-	for(int i = 0; i < complexI.rows; i++){
-		for(int j = 0; j < complexI.cols; j++){
-			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
-			if(di <= d1 || di >= d2){
-				mask.at<cv::Vec2f>(i, j)[0] = 1;
-				mask.at<cv::Vec2f>(i, j)[1] = 1;
-			}
-			else{
-				mask.at<cv::Vec2f>(i, j)[0] = 0;
-				mask.at<cv::Vec2f>(i, j)[1] = 0;
-			}
-		}
-	}
-
-	// Applies mask to complexI
-	cv::multiply(complexI, mask, complexI);
-
-	// Inverse DFT
-	utilities::cvidft(tgt, magafter, complexI);
-}
-
-void utilities::dftbp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d1, int d2){
-	// Runs dft on src
-	cv::Mat complexI;
-	utilities::cvdft(tgt, magbefore, complexI);
-
-	// Runs low pass filter mask
-	cv::Mat mask(complexI.rows, complexI.cols, CV_32FC2);
-	int cx = complexI.cols / 2, cy = complexI.rows / 2, di;
-	for(int i = 0; i < complexI.rows; i++){
-		for(int j = 0; j < complexI.cols; j++){
-			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
-			if(di >= d1 && di <= d2){
-				mask.at<cv::Vec2f>(i, j)[0] = 1;
-				mask.at<cv::Vec2f>(i, j)[1] = 1;
-			}
-			else{
-				mask.at<cv::Vec2f>(i, j)[0] = 0;
-				mask.at<cv::Vec2f>(i, j)[1] = 0;
-			}
-		}
-	}
-
-	// Applies mask to complexI
-	cv::multiply(complexI, mask, complexI);
-
-	// Inverse DFT
-	utilities::cvidft(tgt, magafter, complexI);
-}
-
-void utilities::dftlpn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1, int d2){
-	// Runs dft on src
-	cv::Mat complexI;
-	utilities::cvdft(tgt, magbefore, complexI);
-
-	// Runs low pass filter mask
-	cv::Mat mask(complexI.rows, complexI.cols, CV_32FC2);
-	int cx = complexI.cols / 2, cy = complexI.rows / 2, di;
-	for(int i = 0; i < complexI.rows; i++){
-		for(int j = 0; j < complexI.cols; j++){
-			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
-			if(di <= d0 || (di >= d1 && di <= d2)){
-				mask.at<cv::Vec2f>(i, j)[0] = 1;
-				mask.at<cv::Vec2f>(i, j)[1] = 1;
-			}
-			else{
-				mask.at<cv::Vec2f>(i, j)[0] = 0;
-				mask.at<cv::Vec2f>(i, j)[1] = 0;
-			}
-		}
-	}
-
-	// Applies mask to complexI
-	cv::multiply(complexI, mask, complexI);
-
-	// Inverse DFT
-	utilities::cvidft(tgt, magafter, complexI);
-}
-
-void utilities::dfthpbp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1, int d2){
-	// Runs dft on src
-	cv::Mat complexI;
-	utilities::cvdft(tgt, magbefore, complexI);
-
-	// Runs low pass filter mask
-	cv::Mat mask(complexI.rows, complexI.cols, CV_32FC2);
-	int cx = complexI.cols / 2, cy = complexI.rows / 2, di;
-	for(int i = 0; i < complexI.rows; i++){
-		for(int j = 0; j < complexI.cols; j++){
-			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
-			if(di >= d0 && (di <= d1 || di >= d2)){
-				mask.at<cv::Vec2f>(i, j)[0] = 1;
-				mask.at<cv::Vec2f>(i, j)[1] = 1;
-			}
-			else{
-				mask.at<cv::Vec2f>(i, j)[0] = 0;
-				mask.at<cv::Vec2f>(i, j)[1] = 0;
-			}
-		}
-	}
-
-	// Applies mask to complexI
-	cv::multiply(complexI, mask, complexI);
-
-	// Inverse DFT
-	utilities::cvidft(tgt, magafter, complexI);
-}
-
-void utilities::dfthpn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1, int d2){
-	// Runs dft on src
-	cv::Mat complexI;
-	utilities::cvdft(tgt, magbefore, complexI);
-
-	// Runs low pass filter mask
-	cv::Mat mask(complexI.rows, complexI.cols, CV_32FC2);
-	int cx = complexI.cols / 2, cy = complexI.rows / 2, di;
-	for(int i = 0; i < complexI.rows; i++){
-		for(int j = 0; j < complexI.cols; j++){
-			di = sqrt(pow(i-cy, 2) + pow(j-cx, 2));
-			if(di >= d0 || (di >= d1 && di <= d2)){
-				mask.at<cv::Vec2f>(i, j)[0] = 1;
-				mask.at<cv::Vec2f>(i, j)[1] = 1;
-			}
-			else{
-				mask.at<cv::Vec2f>(i, j)[0] = 0;
-				mask.at<cv::Vec2f>(i, j)[1] = 0;
-			}
-		}
-	}
+	cv::Mat mask = utilities::create_mask(filter, complexI.rows, complexI.cols, d0, d1, d2);
 
 	// Applies mask to complexI
 	cv::multiply(complexI, mask, complexI);

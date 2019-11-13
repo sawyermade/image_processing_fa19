@@ -10,6 +10,8 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
+enum Filter{lowpass, highpass, notch, bandpass, lpn, hpbp};
+
 class utilities
 {
 	public:
@@ -53,16 +55,10 @@ class utilities
 
 		// hw4
 		static void swapQuads(cv::Mat &img);
+		static cv::Mat create_mask(Filter filter, int rows, int cols, int d0, int d1, int d2);
 		static void cvdft(cv::Mat &src, cv::Mat &magI, cv::Mat &complexI_out);
 		static void cvidft(cv::Mat &tgt, cv::Mat &magI, cv::Mat &complexI);
-		static void dftlp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0);
-		static void dfts(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0);
-		static void dfthp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0);
-		static void dftn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d1, int d2);
-		static void dftbp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d1, int d2);
-		static void dftlpn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1, int d2);
-		static void dfthpbp(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1, int d2);
-		static void dfthpn(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1, int d2);
+		static void dft_filter(cv::Mat &tgt, cv::Mat &magbefore, cv::Mat &magafter, int d0, int d1, int d2, Filter filter);
 };
 
 #endif

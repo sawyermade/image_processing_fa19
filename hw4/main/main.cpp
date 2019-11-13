@@ -127,7 +127,8 @@ int main (int argc, char** argv)
 				// Local vars
 				Mat img_roi, magbefore, magafter;
 				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
-				int d0;
+				int d0 = -1, d1 = -1, d2 = -1;
+				Filter filter = lowpass;
 
 				// Gets D0
 				fp >> d0;
@@ -136,7 +137,7 @@ int main (int argc, char** argv)
 				if(!ovlap){
 					// Creates roi and runs low pass dft
 					img_roi = tgt_cv(cv_roi);
-					utilities::dftlp(img_roi, magbefore, magafter, d0); 
+					utilities::dft_filter(img_roi, magbefore, magafter, d0, d1, d2, filter); 
 
 					// Saves mag before and after images
 					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
@@ -150,7 +151,8 @@ int main (int argc, char** argv)
 				// Local vars
 				Mat img_roi, magbefore, magafter;
 				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
-				int d0;
+				int d0 = -1, d1 = -1, d2 = -1;
+				Filter filter = highpass;
 
 				// Gets D0
 				fp >> d0;
@@ -159,7 +161,7 @@ int main (int argc, char** argv)
 				if(!ovlap){
 					// Creates roi and runs low pass dft
 					img_roi = tgt_cv(cv_roi);
-					utilities::dfthp(img_roi, magbefore, magafter, d0); 
+					utilities::dft_filter(img_roi, magbefore, magafter, d0, d1, d2, filter); 
 
 					// Saves mag before and after images
 					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
@@ -172,7 +174,8 @@ int main (int argc, char** argv)
 				// Local vars
 				Mat img_roi, magbefore, magafter;
 				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
-				int d1, d2;
+				int d0 = -1, d1 = -1, d2 = -1;
+				Filter filter = notch;
 
 				// Gets D0
 				fp >> d1 >> d2;
@@ -181,7 +184,7 @@ int main (int argc, char** argv)
 				if(!ovlap){
 					// Creates roi and runs low pass dft
 					img_roi = tgt_cv(cv_roi);
-					utilities::dftn(img_roi, magbefore, magafter, d1, d2);
+					utilities::dft_filter(img_roi, magbefore, magafter, d0, d1, d2, filter); 
 
 					// Saves mag before and after images
 					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
@@ -195,7 +198,8 @@ int main (int argc, char** argv)
 				// Local vars
 				Mat img_roi, magbefore, magafter;
 				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
-				int d1, d2;
+				int d0 = -1, d1 = -1, d2 = -1;
+				Filter filter = bandpass;
 
 				// Gets D0
 				fp >> d1 >> d2;
@@ -204,7 +208,7 @@ int main (int argc, char** argv)
 				if(!ovlap){
 					// Creates roi and runs low pass dft
 					img_roi = tgt_cv(cv_roi);
-					utilities::dftbp(img_roi, magbefore, magafter, d1, d2); 
+					utilities::dft_filter(img_roi, magbefore, magafter, d0, d1, d2, filter); 
 
 					// Saves mag before and after images
 					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
@@ -218,7 +222,8 @@ int main (int argc, char** argv)
 				// Local vars
 				Mat img_roi, magbefore, magafter;
 				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
-				int d0, d1, d2;
+				int d0 = -1, d1 = -1, d2 = -1;
+				Filter filter = lpn;
 
 				// Gets D0
 				fp >> d0 >> d1 >> d2;
@@ -227,7 +232,7 @@ int main (int argc, char** argv)
 				if(!ovlap){
 					// Creates roi and runs low pass dft
 					img_roi = tgt_cv(cv_roi);
-					utilities::dftlpn(img_roi, magbefore, magafter, d0, d1, d2);
+					utilities::dft_filter(img_roi, magbefore, magafter, d0, d1, d2, filter); 
 
 					// Saves mag before and after images
 					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
@@ -241,7 +246,8 @@ int main (int argc, char** argv)
 				// Local vars
 				Mat img_roi, magbefore, magafter;
 				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
-				int d0, d1, d2;
+				int d0 = -1, d1 = -1, d2 = -1;
+				Filter filter = hpbp;
 
 				// Gets D0
 				fp >> d0 >> d1 >> d2;
@@ -250,30 +256,7 @@ int main (int argc, char** argv)
 				if(!ovlap){
 					// Creates roi and runs low pass dft
 					img_roi = tgt_cv(cv_roi);
-					utilities::dfthpbp(img_roi, magbefore, magafter, d0, d1, d2);
-
-					// Saves mag before and after images
-					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
-					imwrite(outfile + "-mag_after-" + to_string(i) + ".png", magafter);
-
-					cv_flag = true;
-				}
-			}
-
-			else if(!strncasecmp(pch.c_str(),"dfthpn",MAXLEN)){
-				// Local vars
-				Mat img_roi, magbefore, magafter;
-				Rect cv_roi = Rect(start.first, start.second, size.first, size.second);
-				int d0, d1, d2;
-
-				// Gets D0
-				fp >> d0 >> d1 >> d2;
-
-				// Checks overlap
-				if(!ovlap){
-					// Creates roi and runs low pass dft
-					img_roi = tgt_cv(cv_roi);
-					utilities::dftlpn(img_roi, magbefore, magafter, d0, d1, d2);
+					utilities::dft_filter(img_roi, magbefore, magafter, d0, d1, d2, filter); 
 
 					// Saves mag before and after images
 					imwrite(outfile + "-mag_before-" + to_string(i) + ".png", magbefore);
