@@ -155,7 +155,7 @@ void utilities::cvdft(cv::Mat &src, cv::Mat &magI, cv::Mat &complexI){
 	int n = cv::getOptimalDFTSize(src.cols);
 	cv::copyMakeBorder(src, padded, 0, m - src.rows, 0, n - src.cols, cv::BORDER_CONSTANT, cv::Scalar::all(0));
 
-	// Create planes and run dft
+	// Create planes, merges, and runs dft
 	cv::Mat planes[] = {cv::Mat_<float>(padded), cv::Mat::zeros(padded.size(), CV_32F)};
 	cv::merge(planes, 2, complexI);
 	cv::dft(complexI, complexI);
