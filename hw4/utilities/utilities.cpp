@@ -114,7 +114,7 @@ cv::Mat utilities::create_mask(Filter filter, int rows, int cols, int d0, int d1
 					}
 					break;
 
-				// High Pass and Bound Pass Filters
+				// High Pass and Band Pass Filters
 				case hpbp:
 					if(di >= d0 && (di <= d1 || di >= d2)){
 						mask.at<cv::Vec2f>(i, j)[0] = 1;
