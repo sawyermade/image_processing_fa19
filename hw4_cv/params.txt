@@ -4,3 +4,5 @@ images/crayons.ppm output/crayons-sobel.png 1 sobel 0 0 600 480
 images/crayons.ppm output/crayons-canny.png 1 canny 0 0 600 480
 images/crayons.ppm output/crayons-sobel_hist.png 1 sobel_hist 0 0 600 480
 images/crayons.ppm output/crayons-canny_hist.png 1 canny_hist 0 0 600 480
+images/crayons.ppm output/crayons-sobel_sub.png 1 sobel_sub
+images/crayons.ppm output/crayons-canny_sub.png 1 canny_sub

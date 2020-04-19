@@ -8,7 +8,7 @@ using namespace cv;
 
 char W = ' ';
 
-enum processes {hist_stretch, hist_equal, sobel, canny, sobel_hist, canny_hist};
+enum processes {hist_stretch, hist_equal, sobel, canny, sobel_hist, canny_hist, sobel_sub, canny_sub};
 processes hash_proc(string const &process){
 	if(process == "hist_stretch") return hist_stretch;
 	if(process == "hist_equal") return hist_equal;
@@ -16,6 +16,8 @@ processes hash_proc(string const &process){
 	if(process == "canny") return canny;
 	if(process == "sobel_hist") return sobel_hist;
 	if(process == "canny_hist") return canny_hist;
+	if(process == "sobel_sub") return sobel_sub;
+	if(process == "canny_sub") return canny_sub;
 }
 
 void hist_cv(Mat &img_roi, int channel_num){
@@ -69,7 +71,7 @@ int main(int argc, char** argv){
 	string line;
 	istringstream params;
 	Rect roi;
-	Mat img, img_roi;
+	Mat img, img_roi, img_temp;
 	while(params_fp){
 		// Gets line
 		getline(params_fp, line);
@@ -98,7 +100,11 @@ int main(int argc, char** argv){
 			// Gets process and ROI x,y and w,h
 			string process;
 			int x, y, w, h;
-			params >> process >> x >> y >> w >> h;
+			params >> process;
+			if(process == "sobel_sub" || process == "canny_sub")
+				x = 0, y = 0, w = img.cols, h = img.rows;
+			else
+				params >> x >> y >> w >> h;
 			// cout << process << W << x << W << y << W << w << W << h << endl;
 
 			// Sets images ROI
@@ -139,6 +145,24 @@ int main(int argc, char** argv){
 				case canny_hist:
 					hist_cv(img_roi, img.channels());
 					canny_cv(img_roi, img.channels());
+					break;
+
+				// Sobel & Hist Subtraction
+				case sobel_sub:
+					img_roi.copyTo(img_temp);
+					sobel_cv(img_temp, img_temp.channels());
+					hist_cv(img_roi, img.channels());
+					sobel_cv(img_roi, img.channels());
+					absdiff(img_roi, img_temp, img_roi);
+					break;
+
+				// Canny & Hist Subtraction
+				case canny_sub:
+					img_roi.copyTo(img_temp);
+					canny_cv(img_temp, img_temp.channels());
+					hist_cv(img_roi, img.channels());
+					canny_cv(img_roi, img.channels());
+					absdiff(img_roi, img_temp, img_roi);
 					break;
 			}
 

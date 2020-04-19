@@ -54,3 +54,13 @@ images/crayons.ppm output/crayons-sobel_hist.png 1 sobel_hist 0 0 600 480
 images/crayons.ppm output/crayons-canny_hist.png 1 canny_hist 0 0 600 480
 ```
 
+### Sobel with Histogram Subtraction
+```
+# path/to/input    path/to/output               1 sobel_sub
+images/crayons.ppm output/crayons-sobel_sub.png 1 sobel_sub
+```
+
+### Canny with Histogram Subtraction
+```
+# path/to/input    path/to/output               1 canny_sub
+images/crayons.ppm output/crayons-canny_sub.png 1 canny_sub
