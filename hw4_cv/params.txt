@@ -1,0 +1,6 @@
+images/crayons.ppm output/crayons-hist_equal.png 2 hist_equal 0 0 300 240 hist_stretch 300 240 300 240 100 255
+images/wheel.ppm output/wheel-sobel_canny.png 2 sobel 0 0 150 150 canny 150 150 150 150
+images/crayons.ppm output/crayons-sobel.png 1 sobel 0 0 600 480
+images/crayons.ppm output/crayons-canny.png 1 canny 0 0 600 480
+images/crayons.ppm output/crayons-sobel_hist.png 1 sobel_hist 0 0 600 480
+images/crayons.ppm output/crayons-canny_hist.png 1 canny_hist 0 0 600 480
